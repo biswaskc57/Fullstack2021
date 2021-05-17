@@ -13,17 +13,18 @@ const Statistics = (props) => {
   return (
     <div>
       <table style={{ width: "40%" }}>
-        <tr>
-          <td style={{ width: "30%" }}>{props.text}:</td>
-          <td style={{ width: "70%" }}> {props.value}</td>
-        </tr>
+        <tbody>
+          <tr>
+            <td style={{ width: "30%" }}>{props.text}:</td>
+            <td style={{ width: "70%" }}> {props.value}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   );
 };
 
 const Statistic = (props) => {
-  console.log(props.good);
   if (props.sum < 1) {
     return (
       <div>

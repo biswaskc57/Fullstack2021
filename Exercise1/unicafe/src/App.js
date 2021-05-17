@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 
+const Button = (props) => {
+  return (
+    <div>
+      <button onClick={props.goodHandler}>Good</button>
+      <button onClick={props.badHandler}>Bad</button>
+      <button onClick={props.neutralHandler}>Neutral</button>
+    </div>
+  );
+};
 const Statistics = (props) => {
   return (
     <div>
@@ -18,27 +27,20 @@ const Statistic = (props) => {
   if (props.sum < 1) {
     return (
       <div>
-        <button onClick={props.goodHandler}>good</button>
-        <button onClick={props.badHandler}>bad</button>
-        <button onClick={props.neutralHandler}>neutral</button>
         <p>No feedbacks yet!</p>
       </div>
     );
   } else
     return (
       <div>
-        <button onClick={props.goodHandler}>good</button>
-        <button onClick={props.badHandler}>bad</button>
-        <button onClick={props.neutralHandler}>neutral</button>
-
         <h1>Statistics:</h1>
         <div>
           {" "}
-          <Statistics text="good" value={props.good} />
-          <Statistics text="neutral" value={props.neutral} />
-          <Statistics text="bad" value={props.bad} />
-          <Statistics text="all" value={props.sum} />
-          <Statistics text="average" value={(props.sum / 3).toFixed(2)} />
+          <Statistics text="Good" value={props.good} />
+          <Statistics text="Neutral" value={props.neutral} />
+          <Statistics text="Bad" value={props.bad} />
+          <Statistics text="All" value={props.sum} />
+          <Statistics text="Average" value={(props.sum / 3).toFixed(2)} />
           <Statistics
             text="positive rate"
             value={(props.good / props.sum).toFixed(2) * 100 + " %"}
@@ -68,15 +70,13 @@ function App(props) {
   return (
     <div className="App">
       <h1>Give feedback:</h1>
-      <Statistic
+
+      <Button
         goodHandler={clickHandlerGood}
         badHandler={clickHandlerBad}
         neutralHandler={clickHandlerNeutral}
-        sum={sum}
-        good={good}
-        bad={bad}
-        neutral={neutral}
       />
+      <Statistic sum={sum} good={good} bad={bad} neutral={neutral} />
     </div>
   );
 }

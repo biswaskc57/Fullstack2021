@@ -41,7 +41,7 @@ function App() {
         highestNum = points[i];
         console.log(i);
         console.log(anecdotes[i]);
-        answer = anecdotes[i];
+        answer = anecdotes[i] + " has " + points[i] + " votes";
       }
     }
     return answer;

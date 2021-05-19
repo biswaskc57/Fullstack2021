@@ -68,11 +68,13 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div> {persons.name}</div>
-      {persons.map((person) => (
-        <li key={person.name}>
-          {person.name}: {person.number}
-        </li>
-      ))}
+      {persons
+        .filter((name) => name.name.toLowerCase().includes(filter))
+        .map((open) => (
+          <li key={open.name}>
+            {open.name}: {open.number}
+          </li>
+        ))}
     </div>
   );
 };

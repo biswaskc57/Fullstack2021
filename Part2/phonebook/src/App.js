@@ -1,6 +1,9 @@
 import logo from "./logo.svg";
 import "./App.css";
 import React, { useState } from "react";
+import Filter from "./Components/Filter";
+import PersonForm from "./Components/PersonForm";
+import Persons from "./Components/Persons";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -13,12 +16,19 @@ const App = () => {
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filter, setFilter] = useState("");
 
+  const nameHandler = (event) => setNewName(event.target.value);
+
+  const numberHandler = (event) => setNewPhoneNumber(event.target.value);
+
+  const filterHandler = (event) => setFilter(event.target.value);
+
   console.log(newPhoneNumber);
+
   const addPerson = (event) => {
     event.preventDefault();
     const personObject = {
       name: newName,
-      phone: newPhoneNumber,
+      number: newPhoneNumber,
     };
     const checkName = persons.map((allname, index) => {
       console.log(persons);
@@ -33,48 +43,18 @@ const App = () => {
 
   return (
     <div>
-      <p>
-        {" "}
-        Filter:{" "}
-        <input
-          name="phoneNumber"
-          onChange={(event) => setFilter(event.target.value)}
-          value={filter}
-        />
-      </p>
-      <h2>Add a new</h2>
-      <form>
-        <div>
-          name:{" "}
-          <input
-            name="name"
-            onChange={(event) => setNewName(event.target.value)}
-            value={newName}
-          />
-          <p>
-            Phone no:{" "}
-            <input
-              name="phoneNumber"
-              onChange={(event) => setNewPhoneNumber(event.target.value)}
-              value={newPhoneNumber}
-            />
-          </p>
-        </div>
-        <div>
-          <button type="submit" onClick={addPerson}>
-            add
-          </button>
-        </div>
-      </form>
+      <Filter handler={filterHandler} />
+      <h2>Add a new:</h2>
+      <PersonForm
+        persons={persons}
+        nameHandler={nameHandler}
+        numberHandler={numberHandler}
+        addPerson={addPerson}
+      />
+
       <h2>Numbers</h2>
-      <div> {persons.name}</div>
-      {persons
-        .filter((name) => name.name.toLowerCase().includes(filter))
-        .map((open) => (
-          <li key={open.name}>
-            {open.name}: {open.number}
-          </li>
-        ))}
+      <Persons person={persons} filter={filter} />
+      <div></div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Course from "./Components/course";
+import Note from "./Components/Note";
 
 export default function App() {
   const courses = [

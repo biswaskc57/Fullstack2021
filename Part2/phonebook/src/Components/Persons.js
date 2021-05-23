@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 const PersonForm = (props) => {
   console.log(props.person);
-  console.log(props.nameHandler);
-  console.log(props.numberHandler);
+
   return (
     <div>
       {props.person

@@ -1,17 +1,21 @@
-import logo from "./logo.svg";
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Filter from "./Components/Filter";
 import PersonForm from "./Components/PersonForm";
 import Persons from "./Components/Persons";
+import axios from "axios";
+const App = (props) => {
+  const [persons, setPersons] = useState([]);
 
-const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  useEffect(() => {
+    console.log("effect");
+    axios.get("http://localhost:3001/persons").then((response) => {
+      console.log("promise fulfilled");
+      setPersons(response.data);
+    });
+  }, []);
+  console.log("render", persons.length, "notes");
+
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [filter, setFilter] = useState("");
@@ -37,7 +41,7 @@ const App = () => {
     });
 
     !checkName.includes(newName)
-      ? setPersons(persons.concat(personObject))
+      ? persons.concat(personObject)
       : alert(newName + " is already on the list");
   };
 
@@ -51,7 +55,6 @@ const App = () => {
         numberHandler={numberHandler}
         addPerson={addPerson}
       />
-
       <h2>Numbers</h2>
       <Persons person={persons} filter={filter} />
       <div></div>

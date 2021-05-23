@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const Filter = (props) => {
   console.log(props.handler);
@@ -7,7 +7,7 @@ const Filter = (props) => {
     <div>
       <p>
         {" "}
-        Filter: <input onChange={props.handler} />
+        Filter: <input onChange={props.handler} value={props.value} />
       </p>
     </div>
   );

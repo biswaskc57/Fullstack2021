@@ -1,36 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import Note from "./Note";
+import axios from "axios";
+import noteService from "./services/notes";
 
-const notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    date: "2019-05-30T17:30:31.098Z",
-    important: true,
-  },
-  {
-    id: 2,
-    content: "Browser can execute only JavaScript",
-    date: "2019-05-30T18:39:34.091Z",
-    important: false,
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    date: "2019-05-30T19:20:14.298Z",
-    important: true,
-  },
-];
 export default function NoteComponent() {
-  const [note, setNotes] = useState(notes);
-  const [newNote, setNewNote] = useState("a new note...");
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
 
-  console.log(showAll);
-  const notesToShow = showAll
-    ? note
-    : note.filter((notes) => notes.important === true);
+  const toggleImportanceOf = (id) => {
+    const url = `http://localhost:3001/notes/${id}`;
+    const note = notes.find((n) => n.id === id);
+    const changedNote = { ...note, important: !note.important };
+
+    noteService
+      .update(id, changedNote)
+      .then((returnedNote) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+      })
+      .catch((error) => {
+        alert(`the note '${note.content}' was already deleted from server`);
+        setNotes(notes.filter((n) => n.id !== id));
+      });
+  };
+
+  useEffect(() => {
+    noteService.getAll().then((initialNotes) => {
+      setNotes(initialNotes);
+    });
+  }, []);
+  console.log("render", notes.length, "notes");
 
   const addNote = (event) => {
     event.preventDefault();
@@ -38,12 +38,18 @@ export default function NoteComponent() {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
-      id: note.length + 1,
     };
-
-    setNotes(note.concat(noteObject));
-    setNewNote("");
+    noteService.create(noteObject).then((returnedNote) => {
+      setNotes(notes.concat(returnedNote));
+      setNewNote("");
+    });
   };
+
+  console.log(showAll);
+
+  const notesToShow = showAll
+    ? notes
+    : notes.filter((notes) => notes.important === true);
   console.log(showAll);
 
   const handleNoteChange = (event) => {
@@ -59,8 +65,12 @@ export default function NoteComponent() {
         </button>
       </div>
       <ul>
-        {notesToShow.map((note) => (
-          <Note key={note.id} note={note} />
+        {notesToShow.map((note, i) => (
+          <Note
+            key={i}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         ))}
       </ul>
 

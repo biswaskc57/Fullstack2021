@@ -4,14 +4,16 @@ import Filter from "./Components/Filter";
 import PersonForm from "./Components/PersonForm";
 import Persons from "./Components/Persons";
 import axios from "axios";
+import useService from "./Components/services/persons";
+
 const App = (props) => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
     console.log("effect");
-    axios.get("http://localhost:3001/persons").then((response) => {
+    useService.getAll().then((response) => {
       console.log("promise fulfilled");
-      setPersons(response.data);
+      setPersons(response);
     });
   }, []);
   console.log("render", persons.length, "notes");
@@ -27,6 +29,17 @@ const App = (props) => {
   const filterHandler = (event) => setFilter(event.target.value);
 
   console.log(newPhoneNumber);
+  console.log(newName);
+
+  const deletePersonOf = (id, name) => {
+    let confirms = window.confirm("Press ok to delete  " + name);
+    confirms == true
+      ? useService.deletePersons(id).then((response) => {
+          console.log(response);
+          setPersons(persons.filter((person) => person.id !== id));
+        })
+      : alert(name + "was not deleted");
+  };
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -40,11 +53,40 @@ const App = (props) => {
       return allname.name;
     });
 
-    !checkName.includes(newName)
-      ? persons.concat(personObject)
-      : alert(newName + " is already on the list");
-  };
+    if (!checkName.includes(newName) && newName !== "") {
+      useService.create(personObject).then((response) => {
+        setPersons(persons.concat(response));
+        console.log(response);
+      });
+    } else if (checkName.includes(newName)) {
+      let confirms = window.confirm(
+        "Do you want to change the phone number of " + newName + " ?"
+      );
 
+      //
+      if (confirms === true) {
+        const newPerson = persons.filter(
+          (person) => person.name === newName
+        )[0]; //returns a array of object which is same
+
+        //changed person with the changed number
+        const changedPerson = { ...newPerson, number: newPhoneNumber };
+
+        const toUpdateId = newPerson.id;
+
+        useService.update(toUpdateId, changedPerson).then((response) => {
+          console.log(response);
+          setPersons(
+            persons.map((person) =>
+              person.id !== toUpdateId ? person : response
+            )
+          );
+          console.log(persons);
+        });
+      } else alert("something went wrong");
+    }
+  };
+  console.log(persons);
   return (
     <div>
       <Filter handler={filterHandler} />
@@ -56,7 +98,18 @@ const App = (props) => {
         addPerson={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons person={persons} filter={filter} />
+      <ul>
+        {persons
+          .filter((name) => name.name.toLowerCase().includes(filter))
+          .map((open, i) => (
+            <Persons
+              key={i}
+              person={open}
+              deletePerson={() => deletePersonOf(open.id, open.name)}
+            />
+          ))}
+      </ul>
+
       <div></div>
     </div>
   );

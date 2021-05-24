@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import Course from "./Components/course";
-import Note from "./Components/Note";
+import NoteComponent from "./Components/NoteComponent";
 
 export default function App() {
   const courses = [
@@ -50,7 +50,7 @@ export default function App() {
   ];
   return (
     <div>
-      <Course courses={courses} />
+      <NoteComponent />
     </div>
   );
 }

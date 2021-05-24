@@ -1,19 +1,16 @@
 import React from "react";
 
-const PersonForm = (props) => {
+const Persons = (props) => {
   console.log(props.person);
 
   return (
     <div>
-      {props.person
-        .filter((name) => name.name.toLowerCase().includes(props.filter))
-        .map((open) => (
-          <li key={open.name}>
-            {open.name}: {open.number}
-          </li>
-        ))}
+      <li key={props.i}>
+        {props.person.name}: {props.person.number}
+        <button onClick={props.deletePerson}>delete</button>
+      </li>
     </div>
   );
 };
 
-export default PersonForm;
+export default Persons;

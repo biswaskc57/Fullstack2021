@@ -10,9 +10,13 @@ export default function NoteComponent() {
   const [showAll, setShowAll] = useState(true);
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/notes/${id}`;
+    console.log(id);
+    console.log(notes);
     const note = notes.find((n) => n.id === id);
+
+    console.log(note);
     const changedNote = { ...note, important: !note.important };
+    console.log(changedNote);
 
     noteService
       .update(id, changedNote)

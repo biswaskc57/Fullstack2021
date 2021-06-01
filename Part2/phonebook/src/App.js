@@ -123,7 +123,7 @@ const App = (props) => {
         numberHandler={numberHandler}
         addPerson={addPerson}
       />
-      <h2>Numbers</h2>
+      <h1>Persons and Numbers:</h1>
       <ul className="persons">
         {persons
           .filter((name) => name.name.toLowerCase().includes(filter))

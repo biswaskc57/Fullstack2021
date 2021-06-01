@@ -6,12 +6,12 @@ const PersonForm = (props) => {
   return (
     <div>
       <form>
-        name: <input onChange={props.nameHandler} />
+        Name: <input onChange={props.nameHandler} />
         <p>
           Phone no: <input onChange={props.numberHandler} />
         </p>
         <button type="submit" onClick={props.addPerson}>
-          add
+          ADD
         </button>
       </form>
     </div>

@@ -59,16 +59,27 @@ const App = (props) => {
     });
 
     if (!checkName.includes(newName) && newName !== "") {
-      useService.create(personObject).then((response) => {
-        setPersons(persons.concat(response));
-        setAddMessage(`Added ${newName}`);
-        setTimeout(() => {
-          setAddMessage(null);
-          console.log(setAddMessage);
-        }, 5000);
+      useService
+        .create(personObject)
+        .then((response) => {
+          setPersons(persons.concat(response));
+          setAddMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setAddMessage(null);
+            console.log(setAddMessage);
+          }, 5000);
 
-        console.log(response);
-      });
+          console.log(response);
+        })
+        .catch((error) => {
+          // this is the way to access the error message
+          setAddMessage(error.response.data.error);
+
+          setTimeout(() => {
+            setAddMessage(null);
+            console.log(error.response.data.error);
+          }, 5000);
+        });
     } else if (checkName.includes(newName)) {
       let confirms = window.confirm(
         "Do you want to change the phone number of " + newName + " ?"
@@ -94,6 +105,10 @@ const App = (props) => {
                 person.id !== toUpdateId ? person : response
               )
             );
+            setAddMessage(` ${newName}'s phone number updated`);
+            setTimeout(() => {
+              setAddMessage(null);
+            }, 5000);
             console.log(persons);
           })
           .catch((error) => {

@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+/* eslint-disable no-unused-vars */
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 
@@ -44,6 +46,16 @@ test("all blogs are returned", async () => {
 
   expect(response.body).toHaveLength(initialBlogs.length);
 });
+
+test(" Blog id is defined", async () => {
+  const response = await api.get("/api/blogs");
+  const id = response.body.map((body) => body.id);
+
+  console.log(id);
+
+  expect(id).toBeDefined();
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const listHelper = require("../utils/list_helper");
 
 test("dummy returns 1", () => {
@@ -223,7 +224,7 @@ describe("Most number of Blogs", () => {
   });
 });
 
-describe("most blog by a person", () => {
+/*describe("most blog by a person", () => {
   const bloglist = [
     {
       _id: "5a422a851b54a676234d17f7",
@@ -283,4 +284,4 @@ describe("most blog by a person", () => {
     console.log(result);
     expect(result).toBe(36);
   });
-});
+});*/

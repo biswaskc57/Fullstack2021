@@ -1,16 +1,22 @@
 GET http://localhost:3003/api/blogs
 
 ###
-DELETE http://localhost:3003/api/blogs/1
+DELETE http://localhost:3003/api/blogs/60c20fbb0ea82d2012a283e9
 
 ###
 POST http://localhost:3003/api/blogs
 content-Type: application/json
 
 {
-    "title": "100 days of summer",
-    "author": "Diana singh",
-    "url": "www.youtube.com",
-    "likes": 222
+    "title": "I like airplane game",
+    "author": "Elina si",
+    "url": "www.eliana.com",
+    "likes": 2121
 }
+###
+PUT  http://localhost:3003/api/blogs/60bcf08f008e3f0c2188334c
+content-Type: application/json
 
+{
+    "likes": 2323
+}

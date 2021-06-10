@@ -11,90 +11,112 @@ const Blog = require("../models/blog");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  let blogObject = new Blog(helper.initialBlogs[0]);
-  await blogObject.save();
-  blogObject = new Blog(helper.initialBlogs[1]);
-  await blogObject.save();
+  await Blog.insertMany(helper.initialBlogs);
 });
 
-test("notes are returned as json", async () => {
-  await api
-    .get("/api/blogs")
-    .expect(200)
-    .expect("Content-Type", /application\/json/);
+describe("blogs status", () => {
+  test("notes are returned as json", async () => {
+    await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+  });
+
+  test("all blogs are returned", async () => {
+    const response = await api.get("/api/blogs");
+    console.log(response.body);
+
+    expect(response.body).toHaveLength(helper.initialBlogs.length);
+  });
+
+  test(" Blog id is defined", async () => {
+    const response = await api.get("/api/blogs");
+    const id = response.body.map((body) => body.id);
+
+    console.log(id);
+  });
+});
+describe("addition of a blog", () => {
+  test("a valid blog can be added", async () => {
+    const newBlog = {
+      title: "Basics of Javascript",
+      author: "Mr KC",
+      url: "www.bkc.com",
+      likes: 4423,
+    };
+
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(200)
+      .expect("Content-type", /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+    const titles = blogsAtEnd.map((n) => n.title);
+
+    expect(titles).toContain("Basics of Javascript");
+  });
+
+  test("if likes is missing, it is valued to 0", async () => {
+    const newBlog = {
+      title: "Java over javascript",
+      author: "Kari korhonen",
+      url: "www.hh-kari.com",
+    };
+
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(200)
+      .expect("Content-type", /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+    const blog = blogsAtEnd.filter(
+      (blog) => blog.title === "Java over javascript"
+    );
+    const like = blog[0].likes;
+    console.log(blog);
+
+    console.log(like);
+    expect(like).toBe(0);
+  });
+
+  test("blog without title and url is not added", async () => {
+    const newBlog = {
+      author: "Lawdasur mama",
+      likes: 69,
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(400);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
 });
 
-test("all blogs are returned", async () => {
-  const response = await api.get("/api/blogs");
-  console.log(response.body);
+describe("deletion of a blog", () => {
+  test("succeeds with a status code 204 if id is valid", async () => {
+    const blogsAtStart = await helper.blogsInDb();
 
-  expect(response.body).toHaveLength(helper.initialBlogs.length);
-});
+    console.log(blogsAtStart);
+    const blogToDelete = blogsAtStart[0];
 
-test(" Blog id is defined", async () => {
-  const response = await api.get("/api/blogs");
-  const id = response.body.map((body) => body.id);
+    console.log(blogToDelete.id);
 
-  console.log(id);
-});
+    await api.delete(`/api/blogs/:${blogToDelete.id}`);
+    expect(204);
+    const blogsAtEnd = await helper.blogsInDb();
+    console.log(blogsAtEnd);
 
-test("a valid blog can be added", async () => {
-  const newBlog = {
-    title: "Basics of Javascript",
-    author: "Mr KC",
-    url: "www.bkc.com",
-    likes: 4423,
-  };
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
 
-  await api
-    .post("/api/blogs")
-    .send(newBlog)
-    .expect(200)
-    .expect("Content-type", /application\/json/);
-
-  const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
-
-  const titles = blogsAtEnd.map((n) => n.title);
-
-  expect(titles).toContain("Basics of Javascript");
-});
-
-test("if likes is missing, it is valued to 0", async () => {
-  const newBlog = {
-    title: "Java over javascript",
-    author: "Kari korhonen",
-    url: "www.hh-kari.com",
-  };
-
-  await api
-    .post("/api/blogs")
-    .send(newBlog)
-    .expect(200)
-    .expect("Content-type", /application\/json/);
-
-  const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
-
-  const blog = blogsAtEnd.filter(
-    (blog) => blog.title === "Java over javascript"
-  );
-  const like = blog[0].likes;
-  console.log(blog);
-
-  console.log(like);
-  expect(like).toBe(0);
-});
-test("blog without title and url is not added", async () => {
-  const newBlog = {
-    author: "Lawdasur mama",
-    likes: 69,
-  };
-
-  await api.post("/api/blogs").send(newBlog).expect(400);
-
-  const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+    const titles = blogsAtEnd.map((r) => r.title);
+    expect(titles).not.toContain(blogToDelete.title);
+  });
 });
 
 afterAll(() => {

@@ -60,6 +60,31 @@ test("a valid blog can be added", async () => {
   expect(titles).toContain("Basics of Javascript");
 });
 
+test("if likes is missing, it is valued to 0", async () => {
+  const newBlog = {
+    title: "Java over javascript",
+    author: "Kari korhonen",
+    url: "www.hh-kari.com",
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(200)
+    .expect("Content-type", /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const blog = blogsAtEnd.filter(
+    (blog) => blog.title === "Java over javascript"
+  );
+  const like = blog[0].likes;
+  console.log(blog);
+
+  console.log(like);
+  expect(like).toBe(0);
+});
 afterAll(() => {
   mongoose.connection.close();
 });

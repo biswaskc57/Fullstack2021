@@ -24,11 +24,19 @@ blogsRouter.post("/", async (request, response) => {
   const body = new Blog(request.body);
   console.log(request.body);
 
+  let bloglikes;
+
+  if (body.likes === undefined) {
+    bloglikes = 0;
+  } else {
+    bloglikes = body.likes;
+  }
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: bloglikes,
   });
 
   const savedBlog = await blog.save();

@@ -20,13 +20,19 @@ blogsRouter.get("/", async (request, response) => {
     }
   });*/
 
-blogsRouter.post("/", (request, response) => {
-  const blog = new Blog(request.body);
+blogsRouter.post("/", async (request, response) => {
+  const body = new Blog(request.body);
   console.log(request.body);
 
-  blog.save().then((result) => {
-    response.status(201).json(result);
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
   });
+
+  const savedBlog = await blog.save();
+  response.json(savedBlog);
 });
 
 /*app.delete("/api/blogs/:id", (request, response) => {

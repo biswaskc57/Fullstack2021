@@ -4,32 +4,16 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 
 const app = require("../app");
-
+const helper = require("./test_helper");
 const api = supertest(app);
 
 const Blog = require("../models/blog");
 
-const initialBlogs = [
-  {
-    title: "promised freedom",
-    author: "Obama",
-    url: "www.cnn.com",
-    likes: 22,
-    id: "60bcf08f008e3f0c2188334c",
-  },
-  {
-    title: "Walk to the moon",
-    author: "elon mush",
-    url: "www.bbc.com",
-    likes: 44,
-    id: "60bcf0c4008e3f0c2188334d",
-  },
-];
 beforeEach(async () => {
   await Blog.deleteMany({});
-  let blogObject = new Blog(initialBlogs[0]);
+  let blogObject = new Blog(helper.initialBlogs[0]);
   await blogObject.save();
-  blogObject = new Blog(initialBlogs[1]);
+  blogObject = new Blog(helper.initialBlogs[1]);
   await blogObject.save();
 });
 
@@ -44,7 +28,7 @@ test("all blogs are returned", async () => {
   const response = await api.get("/api/blogs");
   console.log(response.body);
 
-  expect(response.body).toHaveLength(initialBlogs.length);
+  expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
 test(" Blog id is defined", async () => {
@@ -52,8 +36,28 @@ test(" Blog id is defined", async () => {
   const id = response.body.map((body) => body.id);
 
   console.log(id);
+});
 
-  expect(id).toBeDefined();
+test("a valid blog can be added", async () => {
+  const newBlog = {
+    title: "Basics of Javascript",
+    author: "Mr KC",
+    url: "www.bkc.com",
+    likes: 4423,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(200)
+    .expect("Content-type", /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  const titles = blogsAtEnd.map((n) => n.title);
+
+  expect(titles).toContain("Basics of Javascript");
 });
 
 afterAll(() => {

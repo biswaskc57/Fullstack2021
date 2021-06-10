@@ -85,6 +85,18 @@ test("if likes is missing, it is valued to 0", async () => {
   console.log(like);
   expect(like).toBe(0);
 });
+test("blog without title and url is not added", async () => {
+  const newBlog = {
+    author: "Lawdasur mama",
+    likes: 69,
+  };
+
+  await api.post("/api/blogs").send(newBlog).expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });

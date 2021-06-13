@@ -8,10 +8,10 @@ POST http://localhost:3003/api/blogs
 content-Type: application/json
 
 {
-    "title": "I like airplane game",
-    "author": "Elina si",
-    "url": "www.eliana.com",
-    "likes": 2121
+    "title": "In the love of 1000 dreams",
+    "author": "Biswas KC",
+    "url": "www.bisu.com",
+    "likes": 3323
 }
 ###
 PUT  http://localhost:3003/api/blogs/60bcf08f008e3f0c2188334c

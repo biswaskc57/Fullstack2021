@@ -27,16 +27,19 @@ blogsRouter.post("/", async (request, response) => {
     bloglikes = body.likes;
   }
 
+  //new Blog object is created.
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: bloglikes,
   });
-  console.log(body);
-  console.log(body.save());
-  const savedBlog = await blog.save();
 
+  console.log(blog);
+
+  //.save()method
+  // Inserts a new document with request parameters
+  const savedBlog = await blog.save();
   console.log(savedBlog);
 
   response.json(savedBlog);

@@ -1,10 +1,29 @@
 const mongoose = require("mongoose");
 
-const blogSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  url: { type: String, required: true },
-  likes: { type: Number, required: true },
+const config = require("../utils/config");
+const logger = require("../utils/logger");
+
+logger.info("connecting to", config.MONGODB_URI);
+
+mongoose
+  .connect(config.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
+  .then(() => {
+    logger.info("connected to MongoDB");
+  })
+  .catch((error) => {
+    logger.error("error connection to MongoDB:", error.message);
+  });
+mongoose.set("useCreateIndex", true);
+
+const blogSchema = mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

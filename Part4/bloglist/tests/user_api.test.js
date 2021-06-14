@@ -64,3 +64,6 @@ describe("when there is initially one user in db", () => {
     expect(usersAtEnd).toHaveLength(usersAtStart.length);
   });
 });
+afterAll(() => {
+  mongoose.connection.close();
+});

@@ -8,10 +8,13 @@ POST http://localhost:3003/api/blogs
 content-Type: application/json
 
 {
-    "title": "In the love of 1000 dreams",
-    "author": "Biswas KC",
-    "url": "www.bisu.com",
-    "likes": 3323
+    "title": "summer of 69",
+    "author": "Bryan adams",
+    "url": "www.bbc.com",
+    "likes": 1122,
+    "userId":"60c711e020f0cb10298f4ee7"
+   
+    
 }
 ###
 PUT  http://localhost:3003/api/blogs/60bcf08f008e3f0c2188334c

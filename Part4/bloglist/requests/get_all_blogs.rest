@@ -6,14 +6,13 @@ DELETE http://localhost:3003/api/blogs/60c20fbb0ea82d2012a283e9
 ###
 POST http://localhost:3003/api/blogs
 content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1hdGNodW1hbiIsImlkIjoiNjBjNzExZTAyMGYwY2IxMDI5OGY0ZWU3IiwiaWF0IjoxNjIzNzUyMzgwfQ.DhEtaZYaCd-eZovZTIresLV6NRNMgedoKZrTwWzUJaI
 
 {
-    "title": "summer of 69",
-    "author": "Bryan adams",
-    "url": "www.bbc.com",
-    "likes": 1122,
+    "title": "WHy this kolaveri di",
+    "author": "Ranjhana",
+    "url": "www.desi-movies.com",
     "userId":"60c711e020f0cb10298f4ee7"
-   
     
 }
 ###

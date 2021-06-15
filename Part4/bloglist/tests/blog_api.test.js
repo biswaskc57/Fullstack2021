@@ -8,14 +8,17 @@ const helper = require("./test_helper");
 const api = supertest(app);
 
 const Blog = require("../models/blog");
+describe("when there are two blogs", () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    let blogObject = new Blog(helper.initialBlogs[0]);
+    await blogObject.save();
 
-beforeEach(async () => {
-  await Blog.deleteMany({});
-  await Blog.insertMany(helper.initialBlogs);
-});
+    blogObject = new Blog(helper.initialBlogs[1]);
+    await blogObject.save();
+  });
 
-describe("blogs status", () => {
-  test("notes are returned as json", async () => {
+  test("blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
       .expect(200)

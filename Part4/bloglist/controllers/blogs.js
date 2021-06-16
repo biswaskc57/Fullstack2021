@@ -30,7 +30,6 @@ blogsRouter.post("/", async (request, response) => {
     return response.status(400).json({ error: "title or url missing" });
   }
 
-  console.log(user);
   let bloglikes;
 
   if (body.likes === undefined) {
@@ -62,20 +61,17 @@ blogsRouter.post("/", async (request, response) => {
 
 blogsRouter.delete("/:id", async (request, response, next) => {
   try {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET);
-    if (!request.token || !decodedToken.id) {
-      return response.status(401).json({ error: "token missing or invalid" });
-    }
-    const user = await User.findById(decodedToken.id);
-    const blog = await Blog.findById(request.params.id);
+    const user = request.user;
+    const blogToDelete = await Blog.findById(request.params.id);
 
-    if (blog === null) {
+    if (blogToDelete === null) {
       return response.status(404).json({ error: "blog not found" });
-    }
-
-    if (user.id.toString() === blog.user.toString()) {
-      const deletedBlog = await blog.delete();
-      response.json(deletedBlog);
+    } else if (
+      user._id.toString() === blogToDelete.user.toString() &&
+      blogToDelete !== null
+    ) {
+      const deletedBlog = await blogToDelete.delete();
+      return response.json(deletedBlog);
     } else {
       return response.status(401).json({ error: "token missing or invalid" });
     }
@@ -87,17 +83,39 @@ blogsRouter.delete("/:id", async (request, response, next) => {
 blogsRouter.put("/:id", async (request, response) => {
   const body = new Blog(request.body);
 
-  console.log(body);
-  const blog = {
-    likes: body.likes,
-  };
+  if (!body.likes) {
+    body.likes = 0;
+  }
+  console.log(request.user._id.toString());
 
-  console.log(request.params.id);
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
-    new: true,
-  });
-  console.log(updatedBlog);
-  response.json(updatedBlog);
+  const blogToUpdate = await Blog.findById(request.params.id);
+  console.log(blogToUpdate);
+  try {
+    if (!blogToUpdate.user || !request.user._id) {
+      return response.status(404);
+    } else if (blogToUpdate.user.toString() === request.user._id.toString()) {
+      const blog = {
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        likes: body.likes,
+      };
+      const updatedBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        blog,
+        {
+          new: true,
+        }
+      );
+      return response.json(updatedBlog);
+    } else {
+      return response
+        .status(401)
+        .json({ error: "token is missing or invalid" });
+    }
+  } catch {
+    next(error);
+  }
 });
 
 module.exports = blogsRouter;

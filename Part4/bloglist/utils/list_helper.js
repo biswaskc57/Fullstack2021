@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 const dummy = (blogs) => {
   if (Array.isArray(blogs)) {
     return 1;
@@ -40,9 +42,37 @@ const mostBlog = (blogs) => {
 
   return result;
 };
+
+const mostLikedAuthor = (blogs) => {
+  if (blogs.length === 0) {
+    return {};
+  } else if (blogs.length === 1) {
+    return blogs[0];
+  } else if (blogs.length > 1) {
+    var output = _(blogs)
+      .groupBy("author")
+      .map((objs, name) => ({
+        author: name,
+        numOfLikes: _.sumBy(objs, "likes"),
+      }))
+      .value();
+    console.log(output);
+
+    const maxNumOfLikes = Math.max(
+      ...output.map((blog) => {
+        return blog.numOfLikes;
+      })
+    );
+    console.log(maxNumOfLikes);
+    const totalLikes = output.find((blog) => blog.numOfLikes === maxNumOfLikes);
+
+    return totalLikes;
+  }
+};
 module.exports = {
   dummy,
   sumOfLikes,
   favouriteBlog,
   mostBlog,
+  mostLikedAuthor,
 };

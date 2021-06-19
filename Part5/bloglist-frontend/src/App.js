@@ -70,9 +70,15 @@ const App = () => {
     setUser(null);
   };
 
-  const addBlog = async (blog) => {
-    const newBlog = await blogService.create(blog);
-    setBlogs(blogs.concat(newBlog));
+  const addBlog = (blog) => {
+    const blogObject = {
+      title: title,
+      author: author,
+      url: url,
+    };
+    blogService.create(blogObject).then((response) => {
+      setBlogs(blogs.concat(blogObject));
+    });
   };
 
   if (user === null) {

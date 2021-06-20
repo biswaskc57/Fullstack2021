@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+
 import Blog from "./components/Blog";
 import Loginform from "./components/loginform";
 import Noteform from "./components/noteform";
+import Notification from "./components/notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-const App = () => {
+export default function App() {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,6 +14,7 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const [msg, setMsg] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -61,7 +64,11 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      alert("Wrong credentials");
+      setMsg(`wrong credentials`);
+      setTimeout(() => {
+        setMsg(null);
+        console.log(setMsg);
+      }, 5000);
     }
   };
 
@@ -76,14 +83,25 @@ const App = () => {
       author: author,
       url: url,
     };
-    blogService.create(blogObject).then((response) => {
-      setBlogs(blogs.concat(blogObject));
-    });
+
+    try {
+      blogService.create(blogObject).then((response) => {
+        setBlogs(blogs.concat(blogObject));
+        setMsg(`a new blog ${blogObject.title} by ${blogObject.author} added`);
+        setTimeout(() => {
+          setMsg(null);
+          console.log(setMsg);
+        }, 5000);
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (user === null) {
     return (
       <div>
+        <Notification message={msg} />
         <Loginform
           username={usernameHandler}
           password={passwordHandler}
@@ -96,6 +114,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={msg} />
       <p>{user.name} logged-in</p>
       <button onClick={handleLogout}>logout</button>
       <h2>create new</h2>
@@ -110,6 +129,4 @@ const App = () => {
       ))}
     </div>
   );
-};
-
-export default App;
+}

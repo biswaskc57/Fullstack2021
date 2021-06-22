@@ -1,21 +1,32 @@
 import React from "react";
-export default function Loginform(props) {
-  console.log(props.handleLogin);
-  console.log(props.username);
-  console.log(props.password);
+
+const LoginForm = ({
+  handleSubmit,
+  handleUsernameChange,
+  handlePasswordChange,
+  username,
+  password,
+}) => {
   return (
     <div>
-      <form onSubmit={props.handleLogin}>
+      <h2>Login</h2>
+
+      <form onSubmit={handleSubmit}>
         <div>
           username
-          <input onChange={props.username} />
+          <input value={username} onChange={handleUsernameChange} />
         </div>
         <div>
           password
-          <input type="password" onChange={props.password} />
+          <input
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
         </div>
         <button type="submit">login</button>
       </form>
     </div>
   );
-}
+};
+export default LoginForm;

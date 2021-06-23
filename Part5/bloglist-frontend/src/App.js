@@ -20,6 +20,8 @@ export default function App() {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  console.log(blogs);
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
@@ -75,24 +77,23 @@ export default function App() {
   const blogForm = () => {
     return (
       <Togglable buttonLabel="create">
-        <BlogForm createBlog={addBlog} />
+        <BlogForm createBlog={addBlog} user={user} />
       </Togglable>
     );
   };
 
-  const addBlog = (blogObject) => {
+  const addBlog = async (blogObject) => {
     try {
-      if (blogObject.title && blogObject.author)
-        blogService.create(blogObject).then((response) => {
-          setBlogs(blogs.concat(blogObject));
-          setMsg(
-            `a new blog ${blogObject.title} by ${blogObject.author} added`
-          );
-          setTimeout(() => {
-            setMsg(null);
-            console.log(setMsg);
-          }, 5000);
-        });
+      if (blogObject.title && blogObject.author) {
+        const newBlog = await blogService.create(blogObject);
+        console.log(newBlog);
+        setBlogs(blogs.concat(newBlog));
+        setMsg(`a new blog ${blogObject.title} by ${blogObject.author} added`);
+        setTimeout(() => {
+          setMsg(null);
+          console.log(setMsg);
+        }, 5000);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -115,7 +116,13 @@ export default function App() {
         <h2>create new</h2>
         {blogForm()}
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog
+            blog={blog}
+            setBlogs={setBlogs}
+            blogs={blogs}
+            setMsg={setMsg}
+            user={user}
+          />
         ))}
       </div>
     );

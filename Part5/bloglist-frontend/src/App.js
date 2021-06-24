@@ -20,8 +20,6 @@ export default function App() {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
-  console.log(blogs);
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
@@ -31,7 +29,7 @@ export default function App() {
     }
   }, []);
 
-  console.log(username, password);
+  console.log(user);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -115,15 +113,19 @@ export default function App() {
         <button onClick={handleLogout}>logout</button>
         <h2>create new</h2>
         {blogForm()}
-        {blogs.map((blog) => (
-          <Blog
-            blog={blog}
-            setBlogs={setBlogs}
-            blogs={blogs}
-            setMsg={setMsg}
-            user={user}
-          />
-        ))}
+        {blogs
+          .sort(function (a, b) {
+            return b.likes - a.likes;
+          })
+          .map((blog) => (
+            <Blog
+              blog={blog}
+              setBlogs={setBlogs}
+              blogs={blogs}
+              setMsg={setMsg}
+              user={user}
+            />
+          ))}
       </div>
     );
   }

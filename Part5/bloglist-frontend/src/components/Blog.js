@@ -6,7 +6,6 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
   const hideWhenVisible = { display: loginVisible ? "none" : "" };
   const showWhenVisible = { display: loginVisible ? "" : "none" };
 
-  console.log(blog.user.name);
   const handleLike = async () => {
     try {
       const id = blog.id;
@@ -32,6 +31,29 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const id = blog.id;
+    const result = window.confirm(
+      `Remove blog  ${blog.title} by ${blog.author}`
+    );
+    if (result === true) {
+      try {
+        const deletedBlog = await blogService.remove(id);
+        console.log(deletedBlog);
+        setBlogs(blogs.filter((blog) => blog.id !== deletedBlog.id));
+        setMsg(`${deletedBlog.title} by ${deletedBlog.author} deleted`);
+        setTimeout(() => {
+          setMsg(null);
+          console.log(setMsg);
+        }, 5000);
+      } catch (exception) {
+        setMsg(exception.message);
+        setTimeout(() => {
+          setMsg(null);
+        }, 5000);
+      }
+    }
+  };
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -43,7 +65,7 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
-        {blog.title} {blog.author}
+        {blog.title} {blog.author}{" "}
         <button onClick={() => setLoginVisible(true)}>show</button>
       </div>
       <div style={showWhenVisible}>
@@ -51,10 +73,21 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
         <button onClick={() => setLoginVisible(false)}>hide</button>
         <p>{blog.url}</p>
         {blog.likes} likes<button onClick={handleLike}>like</button>
-        <p>
-          {blog.user.name}
-          {"hello"}
-        </p>
+        <p>{blog.user.name}</p>
+        {user.name === blog.user.name ? (
+          <p>
+            <button
+              style={{
+                backgroundColor: "azure",
+              }}
+              onClick={handleDelete}
+            >
+              remove
+            </button>
+          </p>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-export default function BlogForm({ createBlog, user }) {
+export default function BlogForm({ createBlog }) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");

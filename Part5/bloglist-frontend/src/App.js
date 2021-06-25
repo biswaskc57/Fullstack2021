@@ -45,7 +45,7 @@ export default function App() {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setMsg(`wrong username or password`);
+      setMsg("wrong username or password");
       setTimeout(() => {
         setMsg(null);
         console.log(setMsg);
@@ -124,6 +124,7 @@ export default function App() {
               blogs={blogs}
               setMsg={setMsg}
               user={user}
+              key={blog.id}
             />
           ))}
       </div>

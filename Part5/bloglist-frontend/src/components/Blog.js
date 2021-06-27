@@ -62,12 +62,17 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
     marginBottom: 5,
   };
 
-  return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible}>
-        {blog.title} {blog.author}{" "}
+  const hideVisible = () => {
+    return (
+      <div style={hideWhenVisible} className="defaultBlog">
+        <p>{blog.title} </p>
+        {blog.author}{" "}
         <button onClick={() => setLoginVisible(true)}>show</button>
       </div>
+    );
+  };
+  const showVisible = () => {
+    return (
       <div style={showWhenVisible}>
         {blog.title} {blog.author}
         <button onClick={() => setLoginVisible(false)}>hide</button>
@@ -89,6 +94,13 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
           ""
         )}
       </div>
+    );
+  };
+
+  return (
+    <div style={blogStyle}>
+      {hideVisible()}
+      {showVisible()}
     </div>
   );
 };

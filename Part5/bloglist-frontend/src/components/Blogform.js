@@ -30,7 +30,7 @@ export default function BlogForm({ createBlog }) {
   };
 
   return (
-    <div>
+    <div className="formDiv">
       <form onSubmit={addBlog}>
         <p>
           title:

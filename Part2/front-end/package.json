@@ -22,7 +22,9 @@
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
     "logs:prod": "heroku logs --tail",
-    "eslint": "eslint ."
+    "eslint": "eslint .",
+    "cypress:open": "cypress open",
+    "test:e2e": "cypress run"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
@@ -46,6 +48,8 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
+    "cypress": "^7.6.0",
+    "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-jest": "^24.3.6"
   }
 }

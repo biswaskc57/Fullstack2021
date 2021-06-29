@@ -34,18 +34,20 @@ export default function BlogForm({ createBlog }) {
       <form onSubmit={addBlog}>
         <p>
           title:
-          <input onChange={titleHandler} />
+          <input id="title" onChange={titleHandler} />
         </p>
         <p>
           Author:
-          <input onChange={authorHandler} />
+          <input id="author" onChange={authorHandler} />
         </p>
         <p>
           Url:
-          <input onChange={urlHandler} />
+          <input id="url" onChange={urlHandler} />
         </p>
         <p>
-          <button type="submit">create</button>
+          <button id="save" type="submit">
+            save
+          </button>
         </p>
       </form>
     </div>

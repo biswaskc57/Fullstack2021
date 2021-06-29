@@ -74,22 +74,23 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
   const showVisible = () => {
     return (
       <div style={showWhenVisible}>
-        {blog.title} {blog.author}
+        <span>{blog.title}</span> {blog.author}
         <button onClick={() => setLoginVisible(false)}>hide</button>
         <p>{blog.url}</p>
-        {blog.likes} likes<button onClick={handleLike}>like</button>
+        {blog.likes} likes
+        <button id="likeButton" onClick={handleLike}>
+          like
+        </button>
         <p>{blog.user.name}</p>
         {user.name === blog.user.name ? (
-          <p>
-            <button
-              style={{
-                backgroundColor: "azure",
-              }}
-              onClick={handleDelete}
-            >
-              remove
-            </button>
-          </p>
+          <button
+            style={{
+              backgroundColor: "azure",
+            }}
+            onClick={handleDelete}
+          >
+            remove
+          </button>
         ) : (
           ""
         )}

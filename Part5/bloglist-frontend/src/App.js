@@ -19,7 +19,7 @@ export default function App() {
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
-
+  console.log(blogs);
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
@@ -42,6 +42,7 @@ export default function App() {
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
+      console.log(user);
       setUsername("");
       setPassword("");
     } catch (exception) {
@@ -74,7 +75,7 @@ export default function App() {
 
   const blogForm = () => {
     return (
-      <Togglable buttonLabel="create">
+      <Togglable buttonLabel="create blog">
         <BlogForm createBlog={addBlog} user={user} />
       </Togglable>
     );

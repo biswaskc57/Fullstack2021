@@ -51,38 +51,39 @@ describe("Blog app", function () {
       cy.contains("save").click();
       cy.contains("a blog created by cypress");
     });
-    describe("and a blog exists", function () {
-      describe("and several blogs exist", function () {
-        beforeEach(function () {
-          cy.createBlog({
-            title: "100 dys of summer",
-            author: "summer",
-            url: "www.summerdays.com",
-          });
-          cy.createBlog({
-            title: "200 dys of summer",
-            author: "summer singh",
-            url: "www.summerdays.com",
-          });
-          cy.createBlog({
-            title: "400 dys of summer",
-            author: "summer chauhan",
-            url: "www.summerdays.com",
-          });
-        });
-        it("A blog can be created", function () {
-          cy.contains("400 dys of summer");
-        });
-        it("one of those can be made important", function () {
-          cy.contains("200 dys of summer")
-            .parent()
-            .find("#likeButton")
-            .as("thebutton");
-          cy.get("@theButton").click();
-          cy.get("@theButton").should("contain", "like");
-          cy.contains("1 likes");
-        });
-      });
+
+    it("like can be increased", function () {
+      const blog = {
+        title: "100 days of summer",
+        author: "Summer singh",
+        url: "www.bbc.com",
+      };
+
+      cy.createBlog(blog);
+
+      cy.contains("show").click();
+      cy.contains("0 likes");
+      cy.contains("like blog").click();
+      cy.contains("1 likes");
+    });
+
+    it("User who created a blog can also delete", function () {
+      const blog = {
+        title: "100 days of summer",
+        author: "Summer singh",
+        url: "www.bbc.com",
+      };
+
+      cy.createBlog(blog);
+      cy.contains("show").click();
+      cy.contains("Biswas KC");
+      cy.contains("remove").click();
+
+      cy.get(".error").should(
+        "contain",
+        blog.title + " by " + blog.author + " deleted"
+      );
+      cy.contains("100 days of summer Summer singh").should("not.exist");
     });
   });
 });

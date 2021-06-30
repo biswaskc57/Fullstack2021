@@ -99,7 +99,7 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       {hideVisible()}
       {showVisible()}
     </div>

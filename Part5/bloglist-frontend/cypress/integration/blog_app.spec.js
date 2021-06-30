@@ -85,5 +85,35 @@ describe("Blog app", function () {
       );
       cy.contains("100 days of summer Summer singh").should("not.exist");
     });
+
+    it("Blogs are sorted according to the likes", function () {
+      const blog1 = {
+        title: "100 days of summer",
+        author: "Summer singh",
+        url: "www.bbc.com",
+        likes: 12,
+      };
+      const blog2 = {
+        title: "200 days of summer",
+        author: "Summer singh",
+        url: "www.bbc.com",
+        likes: 2,
+      };
+      const blog3 = {
+        title: "300 days of summer",
+        author: "Summer singh",
+        url: "www.bbc.com",
+        likes: 22,
+      };
+      cy.createBlog(blog1);
+      cy.createBlog(blog2);
+      cy.createBlog(blog3);
+
+      cy.get(".blog").should(($blogs) => {
+        expect($blogs[0]).to.contain("300 days of summer");
+        expect($blogs[1]).to.contain("100 days of summer");
+        expect($blogs[2]).to.contain("200 days of summer");
+      });
+    });
   });
 });

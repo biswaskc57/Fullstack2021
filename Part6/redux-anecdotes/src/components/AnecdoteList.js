@@ -36,7 +36,13 @@ const AnecdoteList = () => {
   });
   console.log(anecdotes);
   const handleVoteButton = (anecdote) => {
-    dispatch(voteAnecdote(anecdote.id));
+    let id = anecdote.id;
+    const anecdoteObject = {
+      content: anecdote.content,
+      votes: anecdote.votes + 1,
+    };
+
+    dispatch(voteAnecdote(id, anecdoteObject));
     dispatch(createVoteNotification(anecdote.content));
     setTimeout(() => {
       dispatch(removeNotification());

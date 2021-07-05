@@ -1,33 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import NewNote from "./components/NewNote";
 import Notes from "./components/Notes";
+import VisibilityFilter from "./components/VisibilityFilter";
+
+import { initializeNotes } from "./reducers/noteReducer";
+import { useDispatch } from "react-redux";
+
 const App = () => {
-  const filterSelected = (value) => {
-    console.log(value);
-  };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(initializeNotes());
+  }, [dispatch]);
   return (
     <div>
       <NewNote />
-      <div>
-        all{" "}
-        <input
-          type="radio"
-          name="filter"
-          onChange={() => filterSelected("ALL")}
-        />
-        important{" "}
-        <input
-          type="radio"
-          name="filter"
-          onChange={() => filterSelected("IMPORTANT")}
-        />
-        nonimportant{" "}
-        <input
-          type="radio"
-          name="filter"
-          onChange={() => filterSelected("NONIMPORTANT")}
-        />
-      </div>
+      <VisibilityFilter />
       <Notes />
     </div>
   );

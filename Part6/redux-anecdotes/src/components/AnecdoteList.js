@@ -2,6 +2,10 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { voteAnecdote } from "../reducers/anecdoteReducer";
 
+import {
+  createVoteNotification,
+  removeNotification,
+} from "../reducers/NotificationReducer";
 const Anecdote = ({ anecdote, handleClick }) => {
   return (
     <li>
@@ -12,8 +16,32 @@ const Anecdote = ({ anecdote, handleClick }) => {
 };
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state.anecdotes);
   const dispatch = useDispatch();
+
+  const anecdotes = useSelector((state) => {
+    if (state.filter !== "") {
+      const anecdote = state.anecdotes
+        .filter((anecdotes) =>
+          anecdotes.content.toLowerCase().includes(state.filter.toLowerCase())
+        )
+        .map((anecdoteAfterFilter) => ({
+          content: anecdoteAfterFilter.content,
+          vote: anecdoteAfterFilter.votes,
+          id: anecdoteAfterFilter.id,
+        }));
+
+      console.log(anecdote);
+      return anecdote;
+    } else if (state.filter === "") return state.anecdotes;
+  });
+  console.log(anecdotes);
+  const handleVoteButton = (anecdote) => {
+    dispatch(voteAnecdote(anecdote.id));
+    dispatch(createVoteNotification(anecdote.content));
+    setTimeout(() => {
+      dispatch(removeNotification());
+    }, 5000);
+  };
 
   return (
     <ul>
@@ -25,7 +53,7 @@ const AnecdoteList = () => {
           <Anecdote
             anecdote={anecdote}
             key={anecdote.id}
-            handleClick={() => dispatch(voteAnecdote(anecdote.id))}
+            handleClick={() => handleVoteButton(anecdote)}
           />
         ))}
     </ul>

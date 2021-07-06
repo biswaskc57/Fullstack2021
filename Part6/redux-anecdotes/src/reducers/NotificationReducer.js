@@ -3,41 +3,32 @@ const initialState = null;
 const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case "NEW NOTIFICATION":
-      state = action.data.content;
-      return state + " has been added";
-    case "VOTE NOTIFICATION":
-      state = action.data.content;
-      return state + " has been voted";
+      state = action.notification;
+      console.log(state);
+      return state;
+
     case "REMOVE NOTIFICATION":
-      state = action.data.content;
+      state = action.notification;
+      console.log(state);
       return state;
     default:
       return state;
   }
 };
-export const createAddNotification = (content) => {
-  return {
-    type: "NEW NOTIFICATION",
-    data: {
-      content: content,
-    },
-  };
-};
-export const createVoteNotification = (content) => {
-  return {
-    type: "VOTE NOTIFICATION",
-    data: {
-      content: content,
-    },
-  };
-};
 
-export const removeNotification = () => {
-  return {
-    type: "REMOVE NOTIFICATION",
-    data: {
-      content: null,
-    },
+export const setNotification = (notification, min) => {
+  console.log(notification);
+  return async (dispatch) => {
+    dispatch({
+      type: "NEW NOTIFICATION",
+      notification,
+    });
+    setTimeout(() => {
+      dispatch({
+        type: "REMOVE NOTIFICATION",
+        notification: null,
+      });
+    }, min);
   };
 };
 

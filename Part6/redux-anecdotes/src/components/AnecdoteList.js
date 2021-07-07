@@ -40,7 +40,7 @@ const AnecdoteList = () => {
     };
 
     dispatch(voteAnecdote(id, anecdoteObject));
-    dispatch(setNotification(`You voted ${anecdote.content}`, 3000));
+    dispatch(setNotification(`You voted ${anecdote.content}`, 5000));
   };
 
   return (

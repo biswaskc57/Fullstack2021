@@ -1,6 +1,6 @@
 import React, { useState } from "react";
+import { useField } from "./hooks";
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link,
@@ -8,7 +8,6 @@ import {
   useHistory,
 } from "react-router-dom";
 
-// need to figure out the part 7.2
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
@@ -71,48 +70,35 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  const content = useField("context");
+  const author = useField("author");
+  const info = useField("info");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
   };
+
+  console.log(content.value);
 
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          content
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-        </div>
-        <div>
-          author
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
-        <div>
-          url for more info
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
-        </div>
+        content:
+        <input {...content} />
+        <br />
+        author:
+        <input {...author} />
+        <br />
+        info:
+        <input {...info} />
+        <br />
         <button>create</button>
       </form>
     </div>

@@ -16,8 +16,3 @@ export const useField = (type) => {
     onReset,
   };
 };
-
-// modules can have several named exports
-export const useAnotherHook = () => {
-  // ...
-};

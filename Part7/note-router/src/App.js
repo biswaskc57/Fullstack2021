@@ -29,18 +29,6 @@ const Home = () => (
   </div>
 );
 
-const Note = ({ note }) => {
-  return (
-    <div>
-      <h2>{note.content}</h2>
-      <div>{note.user}</div>
-      <div>
-        <strong>{note.important ? "tärkeä" : ""}</strong>
-      </div>
-    </div>
-  );
-};
-
 const Notes = ({ notes }) => (
   <div>
     <h2>Notes</h2>
@@ -53,7 +41,17 @@ const Notes = ({ notes }) => (
     </ul>
   </div>
 );
-
+const Note = ({ note }) => {
+  return (
+    <div>
+      <h2>{note.content}</h2>
+      <div>{note.user}</div>
+      <div>
+        <strong>{note.important ? "tärkeä" : ""}</strong>
+      </div>
+    </div>
+  );
+};
 const Users = () => (
   <div>
     <h2>TKTL notes app</h2>
@@ -127,44 +125,43 @@ const App = () => {
     : null;
   return (
     <div>
-      <Router>
-        <div>
-          <Link style={padding} to="/">
-            home
+      <div>
+        <Link style={padding} to="/">
+          home
+        </Link>
+        <Link style={padding} to="/notes">
+          notes
+        </Link>
+        <Link style={padding} to="/users">
+          users
+        </Link>
+        {user ? (
+          <em>{user} logged in</em>
+        ) : (
+          <Link style={padding} to="/login">
+            login
           </Link>
-          <Link style={padding} to="/notes">
-            notes
-          </Link>
-          <Link style={padding} to="/users">
-            users
-          </Link>
-          {user ? (
-            <em>{user} logged in</em>
-          ) : (
-            <Link style={padding} to="/login">
-              login
-            </Link>
-          )}
-        </div>
+        )}
+      </div>
 
-        <Switch>
-          <Route path="/notes/:id">
-            <Note note={note} />
-          </Route>
-          <Route path="/notes">
-            <Notes notes={notes} />
-          </Route>
-          <Route path="/users">
-            {user ? <Users /> : <Redirect to="/login" />}
-          </Route>
-          <Route path="/login">
-            <Login onLogin={login} />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </Router>
+      <Switch>
+        <Route path="/notes/:id">
+          <Note note={note} />
+        </Route>
+        <Route path="/notes">
+          <Notes notes={notes} />
+        </Route>
+        <Route path="/users">
+          {user ? <Users /> : <Redirect to="/login" />}
+        </Route>
+        <Route path="/login">
+          <Login onLogin={login} />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+
       <div>
         <br />
         <em>Note app, Department of Computer Science 2021</em>

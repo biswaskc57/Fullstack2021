@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-
+import { Table, Navbar, Nav } from "react-bootstrap";
+import { Alert } from "@material-ui/lab";
 import {
   BrowserRouter as Router,
   Switch,
@@ -32,13 +33,18 @@ const Home = () => (
 const Notes = ({ notes }) => (
   <div>
     <h2>Notes</h2>
-    <ul>
-      {notes.map((note) => (
-        <li key={note.id}>
-          <Link to={`/notes/${note.id}`}>{note.content}</Link>
-        </li>
-      ))}
-    </ul>
+    <Table striped>
+      <tbody>
+        {notes.map((note) => (
+          <tr key={note.id}>
+            <td>
+              <Link to={`/notes/${note.id}`}>{note.content}</Link>
+            </td>
+            <td>{note.user}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   </div>
 );
 const Note = ({ note }) => {
@@ -111,9 +117,14 @@ const App = () => {
   ]);
 
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const login = (user) => {
     setUser(user);
+    setMessage(`welcome ${user}`);
+    setTimeout(() => {
+      setMessage(null);
+    }, 10000);
   };
 
   const padding = {
@@ -124,24 +135,40 @@ const App = () => {
     ? notes.find((note) => note.id === Number(match.params.id))
     : null;
   return (
-    <div>
+    <div className="container">
+      {message && <Alert variant="success">{message}</Alert>}
       <div>
-        <Link style={padding} to="/">
-          home
-        </Link>
-        <Link style={padding} to="/notes">
-          notes
-        </Link>
-        <Link style={padding} to="/users">
-          users
-        </Link>
-        {user ? (
-          <em>{user} logged in</em>
-        ) : (
-          <Link style={padding} to="/login">
-            login
-          </Link>
-        )}
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link href="#" as="span">
+                <Link style={padding} to="/">
+                  home
+                </Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                <Link style={padding} to="/notes">
+                  notes
+                </Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                <Link style={padding} to="/users">
+                  users
+                </Link>
+              </Nav.Link>
+              <Nav.Link href="#" as="span">
+                {user ? (
+                  <em style={padding}>{user} logged in</em>
+                ) : (
+                  <Link style={padding} to="/login">
+                    login
+                  </Link>
+                )}
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
       </div>
 
       <Switch>

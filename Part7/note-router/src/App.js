@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { Table, Navbar, Nav } from "react-bootstrap";
-import { Alert } from "@material-ui/lab";
+import { Navbar, Nav } from "react-bootstrap";
+import styled from "styled-components";
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,6 +12,21 @@ import {
   useHistory,
   useRouteMatch,
 } from "react-router-dom";
+import {
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+  TextField,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Button,
+} from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 const Home = () => (
   <div>
@@ -33,18 +48,21 @@ const Home = () => (
 const Notes = ({ notes }) => (
   <div>
     <h2>Notes</h2>
-    <Table striped>
-      <tbody>
-        {notes.map((note) => (
-          <tr key={note.id}>
-            <td>
-              <Link to={`/notes/${note.id}`}>{note.content}</Link>
-            </td>
-            <td>{note.user}</td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+
+    <TableContainer component={Paper}>
+      <Table>
+        <TableBody>
+          {notes.map((note) => (
+            <TableRow key={note.id}>
+              <TableCell>
+                <Link to={`/notes/${note.id}`}>{note.content}</Link>
+              </TableCell>
+              <TableCell>{note.user}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   </div>
 );
 const Note = ({ note }) => {
@@ -71,6 +89,18 @@ const Users = () => (
 
 const Login = (props) => {
   const history = useHistory();
+  const Button = styled.button`
+    background: Bisque;
+    font-size: 1em;
+    margin: 1em;
+    padding: 0.25em 1em;
+    border: 2px solid Chocolate;
+    border-radius: 3px;
+  `;
+
+  const Input = styled.input`
+    margin: 0.25em;
+  `;
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -83,12 +113,18 @@ const Login = (props) => {
       <h2>login</h2>
       <form onSubmit={onSubmit}>
         <div>
-          username: <input />
+          username:
+          <Input />
         </div>
         <div>
-          password: <input type="password" />
+          password:
+          <Input type="password" />
         </div>
-        <button type="submit">login</button>
+        <div>
+          <Button type="submit" primary="">
+            login
+          </Button>
+        </div>
       </form>
     </div>
   );
@@ -130,69 +166,71 @@ const App = () => {
   const padding = {
     padding: 5,
   };
+
+  const Page = styled.div`
+    padding: 1em;
+    background: papayawhip;
+  `;
+
+  const Navigation = styled.div`
+    background: BurlyWood;
+    padding: 1em;
+  `;
+
+  const Footer = styled.div`
+    background: Chocolate;
+    padding: 1em;
+    margin-top: 1em;
+  `;
   const match = useRouteMatch("/notes/:id");
   const note = match
     ? notes.find((note) => note.id === Number(match.params.id))
     : null;
   return (
-    <div className="container">
-      {message && <Alert variant="success">{message}</Alert>}
-      <div>
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="#" as="span">
-                <Link style={padding} to="/">
-                  home
-                </Link>
-              </Nav.Link>
-              <Nav.Link href="#" as="span">
-                <Link style={padding} to="/notes">
-                  notes
-                </Link>
-              </Nav.Link>
-              <Nav.Link href="#" as="span">
-                <Link style={padding} to="/users">
-                  users
-                </Link>
-              </Nav.Link>
-              <Nav.Link href="#" as="span">
-                {user ? (
-                  <em style={padding}>{user} logged in</em>
-                ) : (
-                  <Link style={padding} to="/login">
-                    login
-                  </Link>
-                )}
-              </Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-      </div>
+    <div>
+      {message && <Alert severity="success">{message}</Alert>}
+      <Page>
+        <Navigation>
+          <Link style={padding} to="/">
+            home
+          </Link>
+          <Link style={padding} to="/notes">
+            notes
+          </Link>
+          <Link style={padding} to="/users">
+            users
+          </Link>
+          {user ? (
+            <em>{user} logged in</em>
+          ) : (
+            <Link style={padding} to="/login">
+              login
+            </Link>
+          )}
+        </Navigation>
 
-      <Switch>
-        <Route path="/notes/:id">
-          <Note note={note} />
-        </Route>
-        <Route path="/notes">
-          <Notes notes={notes} />
-        </Route>
-        <Route path="/users">
-          {user ? <Users /> : <Redirect to="/login" />}
-        </Route>
-        <Route path="/login">
-          <Login onLogin={login} />
-        </Route>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
+        <Switch>
+          <Route path="/notes/:id">
+            <Note note={note} />
+          </Route>
+          <Route path="/notes">
+            <Notes notes={notes} />
+          </Route>
+          <Route path="/users">
+            {user ? <Users /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/login">
+            <Login onLogin={login} />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
 
-      <div>
-        <br />
-        <em>Note app, Department of Computer Science 2021</em>
-      </div>
+        <Footer>
+          <em>Note app, Department of Computer Science 2021</em>
+        </Footer>
+      </Page>
     </div>
   );
 };

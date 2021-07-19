@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import blogService from "../services/blogs";
+import setNotification from "../reducers/notificationReducer";
 
-const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
+const Blog = ({ blog, blogs, setBlogs, user }) => {
   const [loginVisible, setLoginVisible] = useState(false);
   const hideWhenVisible = { display: loginVisible ? "none" : "" };
   const showWhenVisible = { display: loginVisible ? "" : "none" };
@@ -24,10 +25,7 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
         blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
       );
     } catch (exception) {
-      setMsg(exception.message);
-      setTimeout(() => {
-        setMsg(null);
-      }, 5000);
+      setNotification(exception.message, 5000);
     }
   };
 
@@ -41,16 +39,12 @@ const Blog = ({ blog, blogs, setBlogs, user, setMsg }) => {
         const deletedBlog = await blogService.remove(id);
         console.log(deletedBlog);
         setBlogs(blogs.filter((blog) => blog.id !== deletedBlog.id));
-        setMsg(`${deletedBlog.title} by ${deletedBlog.author} deleted`);
-        setTimeout(() => {
-          setMsg(null);
-          console.log(setMsg);
-        }, 5000);
+        setNotification(
+          `${deletedBlog.title} by ${deletedBlog.author} deleted`,
+          5000
+        );
       } catch (exception) {
-        setMsg(exception.message);
-        setTimeout(() => {
-          setMsg(null);
-        }, 5000);
+        setNotification(exception.message);
       }
     }
   };

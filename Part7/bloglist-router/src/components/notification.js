@@ -1,19 +1,22 @@
 /* eslint-disable react/react-in-jsx-scope */
 import "../style/app.css";
+import { useSelector } from "react-redux";
 
-export default function Notification(props) {
-  if (props.message === null) {
+export default function Notification() {
+  let notification = useSelector((state) => state.notification);
+  console.log(notification);
+  if (notification === null) {
     return <div>{""}</div>;
-  } else if (props.message.includes("a new blog"))
+  } else if (notification.includes("a new blog"))
     return (
-      <div className="addMessage ">
-        <p>{props.message}</p>
+      <div className="addMessage">
+        <p>{notification}</p>
       </div>
     );
   else
     return (
       <div className="error">
-        <p>{props.message}</p>
+        <p>{notification}</p>
       </div>
     );
 }

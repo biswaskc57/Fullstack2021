@@ -7,15 +7,15 @@ import Notification from "./components/notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Togglable from "./components/Togglable";
-
+import setNotification from "./reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 export default function App() {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  const [msg, setMsg] = useState(null);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -46,11 +46,7 @@ export default function App() {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setMsg("wrong username or password");
-      setTimeout(() => {
-        setMsg(null);
-        console.log(setMsg);
-      }, 5000);
+      setNotification("wrong username or password", 5000);
     }
   };
 
@@ -87,11 +83,12 @@ export default function App() {
         const newBlog = await blogService.create(blogObject);
         console.log(newBlog);
         setBlogs(blogs.concat(newBlog));
-        setMsg(`a new blog ${blogObject.title} by ${blogObject.author} added`);
-        setTimeout(() => {
-          setMsg(null);
-          console.log(setMsg);
-        }, 5000);
+        dispatch(
+          setNotification(
+            `a new blog ${blogObject.title} by ${blogObject.author} added`,
+            5000
+          )
+        );
       }
     } catch (error) {
       console.log(error);
@@ -101,7 +98,7 @@ export default function App() {
   if (user === null) {
     return (
       <div>
-        <Notification message={msg} />
+        <Notification />
         {loginForm()}
       </div>
     );
@@ -109,7 +106,7 @@ export default function App() {
     return (
       <div>
         <h2>blogs</h2>
-        <Notification message={msg} />
+        <Notification />
         <p>{user.name} logged-in</p>
         <button onClick={handleLogout}>logout</button>
         <h2>create new</h2>
@@ -123,7 +120,6 @@ export default function App() {
               blog={blog}
               setBlogs={setBlogs}
               blogs={blogs}
-              setMsg={setMsg}
               user={user}
               key={blog.id}
             />

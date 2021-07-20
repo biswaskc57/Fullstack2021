@@ -7,7 +7,10 @@ export default function Notification() {
   console.log(notification);
   if (notification === null) {
     return <div>{""}</div>;
-  } else if (notification.includes("a new blog"))
+  } else if (
+    notification.includes("a new blog") ||
+    notification.includes("has logged in")
+  )
     return (
       <div className="addMessage">
         <p>{notification}</p>

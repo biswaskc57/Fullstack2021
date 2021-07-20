@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import blogService from "../services/blogs";
-import setNotification from "../reducers/notificationReducer";
-
+import { setNotification } from "../reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 const Blog = ({ blog, blogs, setBlogs, user }) => {
   const [loginVisible, setLoginVisible] = useState(false);
   const hideWhenVisible = { display: loginVisible ? "none" : "" };
   const showWhenVisible = { display: loginVisible ? "" : "none" };
-
+  const dispatch = useDispatch();
   const handleLike = async () => {
     try {
       const id = blog.id;
@@ -25,7 +25,7 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
         blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
       );
     } catch (exception) {
-      setNotification(exception.message, 5000);
+      dispatch(setNotification(exception.message, 5000));
     }
   };
 
@@ -39,9 +39,11 @@ const Blog = ({ blog, blogs, setBlogs, user }) => {
         const deletedBlog = await blogService.remove(id);
         console.log(deletedBlog);
         setBlogs(blogs.filter((blog) => blog.id !== deletedBlog.id));
-        setNotification(
-          `${deletedBlog.title} by ${deletedBlog.author} deleted`,
-          5000
+        dispatch(
+          setNotification(
+            `${deletedBlog.title} by ${deletedBlog.author} deleted`,
+            5000
+          )
         );
       } catch (exception) {
         setNotification(exception.message);

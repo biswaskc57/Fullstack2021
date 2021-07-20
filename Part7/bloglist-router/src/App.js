@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import Blog from "./components/Blog";
 import Loginform from "./components/loginform";
@@ -7,15 +8,15 @@ import Notification from "./components/notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Togglable from "./components/Togglable";
-import setNotification from "./reducers/notificationReducer";
-import { useDispatch } from "react-redux";
-export default function App() {
+import { setNotification } from "./reducers/notificationReducer";
+
+const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-
   const dispatch = useDispatch();
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -45,8 +46,9 @@ export default function App() {
       console.log(user);
       setUsername("");
       setPassword("");
+      dispatch(setNotification(`${user.name} has logged in`, 5000));
     } catch (exception) {
-      setNotification("wrong username or password", 5000);
+      dispatch(setNotification("wrong username or password", 5000));
     }
   };
 
@@ -83,15 +85,16 @@ export default function App() {
         const newBlog = await blogService.create(blogObject);
         console.log(newBlog);
         setBlogs(blogs.concat(newBlog));
+
         dispatch(
           setNotification(
-            `a new blog ${blogObject.title} by ${blogObject.author} added`,
+            `a new blog '${newBlog.title}' by ${newBlog.author} added!`,
             5000
           )
         );
       }
     } catch (error) {
-      console.log(error);
+      console.log("error");
     }
   };
 
@@ -127,4 +130,6 @@ export default function App() {
       </div>
     );
   }
-}
+};
+
+export default App;

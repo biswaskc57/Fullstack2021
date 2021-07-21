@@ -57,6 +57,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
+    dispatch(setNotification(`${user.name} has logged out`, 5000));
     setUser(null);
   };
 

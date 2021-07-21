@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import blogService from "../services/blogs";
+
 import { setNotification } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
-import { likeBlog } from "../reducers/blogReducer";
+import { likeBlog, deleteBlog } from "../reducers/blogReducer";
 
-const Blog = ({ blog, blogs, user }) => {
+const Blog = ({ blog, user }) => {
   const [loginVisible, setLoginVisible] = useState(false);
   const hideWhenVisible = { display: loginVisible ? "none" : "" };
   const showWhenVisible = { display: loginVisible ? "" : "none" };
@@ -14,14 +14,16 @@ const Blog = ({ blog, blogs, user }) => {
     try {
       const id = blog.id;
       const blogObject = {
-        user: blog.user,
+        user: blog.user.id,
         likes: blog.likes + 1,
         author: blog.author,
         title: blog.title,
         url: blog.url,
       };
-      console.log(blogObject.user);
-      dispatch(likeBlog(blogObject, id));
+
+      console.log(blog.user);
+      dispatch(likeBlog(blogObject, id, blog.user));
+      dispatch(setNotification(`You have voted ${blogObject.title}`, 5000));
     } catch (exception) {
       dispatch(setNotification(exception.message, 5000));
     }
@@ -29,19 +31,14 @@ const Blog = ({ blog, blogs, user }) => {
 
   const handleDelete = async () => {
     const id = blog.id;
+    dispatch(deleteBlog(id));
     const result = window.confirm(
       `Remove blog  ${blog.title} by ${blog.author}`
     );
     if (result === true) {
       try {
-        const deletedBlog = await blogService.remove(id);
-        console.log(deletedBlog);
-        blogs = blogs.filter((blog) => blog.id !== deletedBlog.id);
         dispatch(
-          setNotification(
-            `${deletedBlog.title} by ${deletedBlog.author} deleted`,
-            5000
-          )
+          setNotification(`${blog.title} by ${blog.author} deleted`, 5000)
         );
       } catch (exception) {
         dispatch(setNotification(exception.message, 5000));

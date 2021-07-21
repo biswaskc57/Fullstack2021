@@ -30,8 +30,8 @@ export default function BlogForm({ createBlog }) {
   };
 
   console.log(title);
-  console.log();
-  console.log();
+  console.log(author);
+  console.log(url);
   return (
     <div className="formDiv">
       <form onSubmit={addBlog}>

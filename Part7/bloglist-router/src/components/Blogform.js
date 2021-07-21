@@ -29,6 +29,9 @@ export default function BlogForm({ createBlog }) {
     setUrl("");
   };
 
+  console.log(title);
+  console.log();
+  console.log();
   return (
     <div className="formDiv">
       <form onSubmit={addBlog}>

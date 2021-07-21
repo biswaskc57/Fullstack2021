@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Blog from "./components/Blog";
 import Loginform from "./components/loginform";
@@ -9,17 +9,20 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
-
+import { initialBlogs, createBlog } from "./reducers/blogReducer";
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const dispatch = useDispatch();
 
+  const blogs = useSelector((state) => state.blogs);
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    const blog = dispatch(initialBlogs());
+    console.log(blog);
+  }, [dispatch]);
+
   console.log(blogs);
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -82,19 +85,16 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       if (blogObject.title && blogObject.author) {
-        const newBlog = await blogService.create(blogObject);
-        console.log(newBlog);
-        setBlogs(blogs.concat(newBlog));
-
+        dispatch(createBlog(blogObject));
         dispatch(
           setNotification(
-            `a new blog '${newBlog.title}' by ${newBlog.author} added!`,
+            `a new blog '${blogObject.title}' by ${blogObject.author} added!`,
             5000
           )
         );
       }
     } catch (error) {
-      console.log("error");
+      console.log(error);
     }
   };
 
@@ -119,13 +119,7 @@ const App = () => {
             return b.likes - a.likes;
           })
           .map((blog) => (
-            <Blog
-              blog={blog}
-              setBlogs={setBlogs}
-              blogs={blogs}
-              user={user}
-              key={blog.id}
-            />
+            <Blog blog={blog} blogs={blogs} user={user} key={blog.id} />
           ))}
       </div>
     );

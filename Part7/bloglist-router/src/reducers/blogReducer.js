@@ -12,20 +12,10 @@ const blogReducer = (state = [], action) => {
     case "LIKE":
       const blogToLike = action.data;
 
-      //user object is derived from the object to be edited
-      //user id is derived from the object to be edited
-      const user = action.originalUser;
+      const blog = state.find((blog) => blog.id === action.id);
+      console.log(blog);
 
-      console.log(blogToLike);
-      console.log(user);
-
-      const likedBlog = {
-        ...blogToLike,
-        likes: blogToLike.likes,
-        user: user,
-        id: action.id,
-      };
-      console.log(likedBlog);
+      const likedBlog = { ...blog, likes: blogToLike.likes };
 
       const blogs = state.map((blog) =>
         blog.id === action.id ? likedBlog : blog
@@ -61,17 +51,12 @@ export const initialBlogs = () => {
     dispatch({ type: "INITIAL BLOGS", data: blogs });
   };
 };
-export const likeBlog = (likedBlog, id, blogUser) => {
+export const likeBlog = (likedBlog, id) => {
   return async (dispatch) => {
     const blog = await blogServices.update(id, likedBlog);
-
-    //returned blog doesnt contain user detail and id
-    console.log(blog);
-    //so the bloguser and id from blog to be edited has been used
     dispatch({
       type: "LIKE",
       data: blog,
-      originalUser: blogUser,
       id: id,
     });
   };

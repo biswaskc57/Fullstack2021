@@ -21,8 +21,7 @@ const Blog = ({ blog, user }) => {
         url: blog.url,
       };
 
-      console.log(blog.user);
-      dispatch(likeBlog(blogObject, id, blog.user));
+      dispatch(likeBlog(blogObject, id));
       dispatch(setNotification(`You have voted ${blogObject.title}`, 5000));
     } catch (exception) {
       dispatch(setNotification(exception.message, 5000));

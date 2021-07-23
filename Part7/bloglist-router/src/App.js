@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,12 +11,13 @@ import loginService from "./services/login";
 import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
 import { initialBlogs, createBlog } from "./reducers/blogReducer";
+import { loginUser } from "./reducers/userReducer";
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const dispatch = useDispatch();
-
+  let realUser = useSelector((state) => state.user);
   const blogs = useSelector((state) => state.blogs);
 
   useEffect(() => {
@@ -28,16 +30,17 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
+      console.log(loggedUserJSON);
+      console.log(user);
       setUser(user);
-      blogService.setToken(user.token);
     }
   }, []);
 
-  console.log(user);
-
   const handleLogin = async (event) => {
     event.preventDefault();
-    console.log("logging in with", username, password);
+
+    dispatch(loginUser(username, password));
+
     try {
       const user = await loginService.login({
         username,

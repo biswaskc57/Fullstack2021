@@ -11,13 +11,14 @@ import loginService from "./services/login";
 import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
 import { initialBlogs, createBlog } from "./reducers/blogReducer";
-import { loginUser } from "./reducers/userReducer";
+import { loginUser, logoutUser, setUser } from "./reducers/userReducer";
+import storage from "../src/utils/storage";
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const dispatch = useDispatch();
-  let realUser = useSelector((state) => state.user);
+
+  const user = useSelector((state) => state.user);
   const blogs = useSelector((state) => state.blogs);
 
   useEffect(() => {
@@ -25,34 +26,20 @@ const App = () => {
     console.log(blog);
   }, [dispatch]);
 
-  console.log(blogs);
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      console.log(loggedUserJSON);
-      console.log(user);
-      setUser(user);
-    }
-  }, []);
+    const loginUser = storage.getUser();
+    console.log(loginUser);
+    dispatch(setUser(loginUser));
+  }, [dispatch]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    dispatch(loginUser(username, password));
-
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      console.log(user);
+      dispatch(loginUser(username, password));
       setUsername("");
       setPassword("");
-      dispatch(setNotification(`${user.name} has logged in`, 5000));
+      dispatch(setNotification("welcome to the blog app", 5000));
     } catch (exception) {
       dispatch(setNotification("wrong username or password", 5000));
     }
@@ -60,8 +47,8 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
-    dispatch(setNotification(`${user.name} has logged out`, 5000));
-    setUser(null);
+    dispatch(setNotification("logged out", 5000));
+    dispatch(logoutUser());
   };
 
   const loginForm = () => {

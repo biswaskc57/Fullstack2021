@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable indent */
 import loginServices from "../services/login";
+import storage from "../utils/storage";
 
-const userReducer = (state = null, action) => {
+const userReducer = (state = [], action) => {
   switch (action.type) {
     case "LOGIN":
       state = action.data;
@@ -19,9 +20,13 @@ const userReducer = (state = null, action) => {
 export const loginUser = (username, password) => {
   console.log(username, password);
   return async (dispatch) => {
-    const user = await loginServices.login({ username, password });
-    console.log(user);
-    dispatch({ type: "LOGIN", data: user });
+    try {
+      const user = await loginServices.login({ username, password });
+      console.log(user);
+      dispatch({ type: "LOGIN", data: user });
+    } catch (error) {
+      console.log(error);
+    }
   };
 };
 export const logoutUser = () => {
@@ -30,4 +35,13 @@ export const logoutUser = () => {
   };
 };
 
+export const setUser = (user) => {
+  return async (dispatch) => {
+    storage.saveUser(user);
+    await dispatch({
+      type: "LOGIN",
+      data: user,
+    });
+  };
+};
 export default userReducer;

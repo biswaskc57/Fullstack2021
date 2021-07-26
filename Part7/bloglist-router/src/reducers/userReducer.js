@@ -2,8 +2,8 @@
 /* eslint-disable indent */
 import loginServices from "../services/login";
 import storage from "../utils/storage";
-
-const userReducer = (state = [], action) => {
+import blogService from "../services/blogs";
+const userReducer = (state = null, action) => {
   switch (action.type) {
     case "LOGIN":
       state = action.data;
@@ -24,8 +24,11 @@ export const loginUser = (username, password) => {
       const user = await loginServices.login({ username, password });
       console.log(user);
       dispatch({ type: "LOGIN", data: user });
+      storage.saveUser(user);
+      blogService.setToken(user.token);
     } catch (error) {
       console.log(error);
+      storage.saveUser("user is overrated");
     }
   };
 };
@@ -38,6 +41,9 @@ export const logoutUser = () => {
 export const setUser = (user) => {
   return async (dispatch) => {
     storage.saveUser(user);
+    if (user !== null) {
+      blogService.setToken(user.token);
+    }
     await dispatch({
       type: "LOGIN",
       data: user,

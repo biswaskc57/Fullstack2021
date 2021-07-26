@@ -33,10 +33,10 @@ const App = () => {
   }, [dispatch]);
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    dispatch(loginUser(username, password));
 
     try {
-      dispatch(loginUser(username, password));
+      event.preventDefault();
       setUsername("");
       setPassword("");
       dispatch(setNotification("welcome to the blog app", 5000));

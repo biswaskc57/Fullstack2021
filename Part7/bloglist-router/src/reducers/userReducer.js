@@ -3,6 +3,7 @@
 import loginServices from "../services/login";
 import storage from "../utils/storage";
 import blogService from "../services/blogs";
+import { setNotification } from "./notificationReducer";
 const userReducer = (state = null, action) => {
   switch (action.type) {
     case "LOGIN":
@@ -26,15 +27,17 @@ export const loginUser = (username, password) => {
       dispatch({ type: "LOGIN", data: user });
       storage.saveUser(user);
       blogService.setToken(user.token);
+      dispatch(setNotification("welcome to the blog app", 5000));
     } catch (error) {
+      dispatch(setNotification("wrong username or password", 5000));
       console.log(error);
-      storage.saveUser("user is overrated");
     }
   };
 };
 export const logoutUser = () => {
   return async (dispatch) => {
     dispatch({ type: "LOGOUT", data: null });
+    dispatch(setNotification("logged out", 5000));
   };
 };
 

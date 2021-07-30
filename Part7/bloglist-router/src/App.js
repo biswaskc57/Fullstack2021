@@ -17,10 +17,6 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-
-  const user = useSelector((state) => state.user);
-  const blogs = useSelector((state) => state.blogs);
-
   useEffect(() => {
     const blog = dispatch(initialBlogs());
     console.log(blog);
@@ -32,14 +28,17 @@ const App = () => {
     dispatch(setUser(loginUser));
   }, [dispatch]);
 
-  const handleLogin = async (event) => {
-    dispatch(loginUser(username, password));
+  const user = useSelector((state) => state.user);
+  console.log(user);
+  const blogs = useSelector((state) => state.blogs);
 
+  const handleLogin = async (event) => {
     try {
+      const user = dispatch(loginUser(username, password));
+      console.log(user);
       event.preventDefault();
       setUsername("");
       setPassword("");
-      dispatch(setNotification("welcome to the blog app", 5000));
     } catch (exception) {
       dispatch(setNotification("wrong username or password", 5000));
     }
@@ -47,7 +46,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
-    dispatch(setNotification("logged out", 5000));
+
     dispatch(logoutUser());
   };
 

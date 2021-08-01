@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import Blog from "./components/Blog";
+import { Switch, Route } from "react-router-dom";
+import Bloglist from "./components/Bloglist";
+import User from "./components/User";
 import Loginform from "./components/loginform";
 import BlogForm from "./components/Blogform";
 import Notification from "./components/notification";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+
 import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
 import { initialBlogs, createBlog } from "./reducers/blogReducer";
@@ -104,13 +104,14 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
         <h2>create new</h2>
         {blogForm()}
-        {blogs
-          .sort(function (a, b) {
-            return b.likes - a.likes;
-          })
-          .map((blog) => (
-            <Blog blog={blog} blogs={blogs} user={user} key={blog.id} />
-          ))}
+        <Switch>
+          <Route path="/"></Route>
+          <Bloglist user={user} />
+        </Switch>
+        <Switch>
+          <Route path="/users"></Route>
+          <User />
+        </Switch>
       </div>
     );
   }

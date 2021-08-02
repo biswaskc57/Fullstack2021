@@ -18,13 +18,24 @@ const User = () => {
   } else
     return (
       <div>
-        <h1>Blogs</h1>
+        <h1>Users</h1>
 
-        {user.map((user) => (
-          <ul key={user.id}>
-            <li>{user.name}</li>
-          </ul>
-        ))}
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Blogs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {user.map((user) => (
+              <tr key={user.id}>
+                <td style={{ width: "70%" }}>{user.name}:</td>
+                <td style={{ width: "70%" }}> {user.blogs.length}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
 };

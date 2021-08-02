@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import Bloglist from "./components/Bloglist";
 import User from "./components/User";
 import Loginform from "./components/loginform";
@@ -32,6 +32,11 @@ const App = () => {
   console.log(user);
   const blogs = useSelector((state) => state.blogs);
 
+  useEffect(() => {
+    const blog = dispatch(initialBlogs());
+    console.log(blog);
+  }, [dispatch]);
+
   const handleLogin = async (event) => {
     try {
       const user = dispatch(loginUser(username, password));
@@ -39,6 +44,7 @@ const App = () => {
       event.preventDefault();
       setUsername("");
       setPassword("");
+      history.push("/");
     } catch (exception) {
       dispatch(setNotification("wrong username or password", 5000));
     }
@@ -98,19 +104,24 @@ const App = () => {
   } else if (user !== null) {
     return (
       <div>
-        <h2>blogs</h2>
-        <Notification />
-        <p>{user.name} logged-in</p>
-        <button onClick={handleLogout}>logout</button>
-        <h2>create new</h2>
-        {blogForm()}
+        <div>
+          <h2>blogs</h2>
+          <Notification />
+          <p>{user.name} logged-in</p>
+          <button onClick={handleLogout}>logout</button>
+        </div>
         <Switch>
-          <Route path="/"></Route>
-          <Bloglist user={user} />
+          <Route path="/blogs">
+            <h2>create new</h2>
+            {blogForm()}
+            <Bloglist user={user} blogs={blogs} />
+          </Route>
         </Switch>
         <Switch>
-          <Route path="/users"></Route>
-          <User />
+          <Route path="/users">
+            {" "}
+            <User />
+          </Route>
         </Switch>
       </div>
     );

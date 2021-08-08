@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import userServices from "../services/user";
 
-const userInfoReducer = (state = null, action) => {
+const userInfoReducer = (state = [], action) => {
   switch (action.type) {
     case "INITIAL USERS":
       state = action.data;

@@ -4,10 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Blog from "./Blog";
 
-import { setNotification } from "../reducers/notificationReducer";
-
-import { initialBlogs, createBlog } from "../reducers/blogReducer";
-
 const Bloglist = ({ user, blogs }) => {
   return (
     <div>

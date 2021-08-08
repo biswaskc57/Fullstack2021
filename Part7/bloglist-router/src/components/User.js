@@ -1,41 +1,40 @@
 /* eslint-disable react/jsx-key */
-import React, { useEffect } from "react";
-import { initialUsers } from "../reducers/userInfoReducer";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from "@material-ui/core";
 
-const User = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.userList);
-  useEffect(() => {
-    const user = dispatch(initialUsers());
-    console.log(user);
-  }, [dispatch]);
+const User = ({ users }) => {
+  console.log(users);
 
-  console.log(user);
-
-  if (user === null) {
+  if (users === null) {
     return <div></div>;
   } else
     return (
       <div>
         <h1>Users</h1>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Blogs</th>
-            </tr>
-          </thead>
-          <tbody>
-            {user.map((user) => (
-              <tr key={user.id}>
-                <td style={{ width: "70%" }}>{user.name}:</td>
-                <td style={{ width: "70%" }}> {user.blogs.length}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>
+                    <Link to={`/users/${user.id}`}>{user.name}</Link>
+                  </TableCell>
+                  <TableCell>{user.blogs.length}</TableCell>
+                  <TableCell>{user.id}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     );
 };

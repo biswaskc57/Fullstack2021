@@ -1,9 +1,17 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Switch, Route, useHistory } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  useHistory,
+  useRouteMatch,
+  Link,
+} from "react-router-dom";
+import Home from "./components/Home";
 import Bloglist from "./components/Bloglist";
 import User from "./components/User";
+import UserInfo from "./components/UserInfo";
 import Loginform from "./components/loginform";
 import BlogForm from "./components/Blogform";
 import Notification from "./components/notification";
@@ -12,14 +20,25 @@ import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
 import { initialBlogs, createBlog } from "./reducers/blogReducer";
 import { loginUser, logoutUser, setUser } from "./reducers/userReducer";
+import { initialUsers } from "./reducers/userInfoReducer";
 import storage from "../src/utils/storage";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
+
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.user);
+  console.log(users);
+  const blogs = useSelector((state) => state.blogs);
+
+  const userList = useSelector((state) => state.userList);
+  console.log(userList);
+
   useEffect(() => {
-    const blog = dispatch(initialBlogs());
-    console.log(blog);
+    dispatch(initialBlogs());
   }, [dispatch]);
 
   useEffect(() => {
@@ -28,26 +47,21 @@ const App = () => {
     dispatch(setUser(loginUser));
   }, [dispatch]);
 
-  const user = useSelector((state) => state.user);
-  console.log(user);
-  const blogs = useSelector((state) => state.blogs);
-
   useEffect(() => {
-    const blog = dispatch(initialBlogs());
-    console.log(blog);
+    dispatch(initialUsers());
   }, [dispatch]);
+  console.log(userList);
+
+  const match = useRouteMatch("/users/:id");
+  const history = useHistory();
 
   const handleLogin = async (event) => {
-    try {
-      const user = dispatch(loginUser(username, password));
-      console.log(user);
-      event.preventDefault();
-      setUsername("");
-      setPassword("");
-      history.push("/");
-    } catch (exception) {
-      dispatch(setNotification("wrong username or password", 5000));
-    }
+    const user = dispatch(loginUser(username, password));
+    console.log(user);
+    event.preventDefault();
+    setUsername("");
+    setPassword("");
+    history.push("/");
   };
 
   const handleLogout = () => {
@@ -73,7 +87,7 @@ const App = () => {
   const blogForm = () => {
     return (
       <Togglable buttonLabel="create blog">
-        <BlogForm createBlog={addBlog} user={user} />
+        <BlogForm createBlog={addBlog} user={users} />
       </Togglable>
     );
   };
@@ -94,33 +108,50 @@ const App = () => {
     }
   };
 
-  if (user === null) {
+  if (users === null) {
     return (
       <div>
         <Notification />
         {loginForm()}
       </div>
     );
-  } else if (user !== null) {
+  } else if (users !== null) {
     return (
       <div>
+        <AppBar position="static">
+          <Toolbar>
+            <Button color="inherit" component={Link} to="/">
+              home
+            </Button>
+            <Button color="inherit" component={Link} to="/blogs">
+              Blogs
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              users
+            </Button>
+
+            <em>{users.name} logged in</em>
+            <Button onClick={handleLogout}>logout</Button>
+          </Toolbar>
+        </AppBar>
         <div>
-          <h2>blogs</h2>
           <Notification />
-          <p>{user.name} logged-in</p>
-          <button onClick={handleLogout}>logout</button>
         </div>
         <Switch>
+          <Route path="/users/:id">
+            <UserInfo match={match} userList={userList} />
+          </Route>
           <Route path="/blogs">
             <h2>create new</h2>
             {blogForm()}
-            <Bloglist user={user} blogs={blogs} />
+            <Bloglist user={users} blogs={blogs} />
           </Route>
-        </Switch>
-        <Switch>
           <Route path="/users">
             {" "}
-            <User />
+            <User users={userList} />
+          </Route>
+          <Route path="/">
+            <Home />
           </Route>
         </Switch>
       </div>

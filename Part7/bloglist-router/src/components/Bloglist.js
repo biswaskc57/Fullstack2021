@@ -1,19 +1,35 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
-import Blog from "./Blog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from "@material-ui/core";
+import { Link } from "react-router-dom";
 
-const Bloglist = ({ user, blogs }) => {
+const Bloglist = ({ blogs }) => {
   return (
     <div>
-      {blogs
-        .sort(function (a, b) {
-          return b.likes - a.likes;
-        })
-        .map((blog) => (
-          <Blog blog={blog} blogs={blogs} user={user} key={blog.id} />
-        ))}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {blogs
+              .sort(function (a, b) {
+                return b.likes - a.likes;
+              })
+              .map((blog) => (
+                <TableRow key={blog.id}>
+                  <TableCell>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

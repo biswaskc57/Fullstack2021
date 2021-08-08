@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { setNotification } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
 import { likeBlog, deleteBlog } from "../reducers/blogReducer";
 
-const Blog = ({ blog, user }) => {
-  const [loginVisible, setLoginVisible] = useState(false);
-  const hideWhenVisible = { display: loginVisible ? "none" : "" };
-  const showWhenVisible = { display: loginVisible ? "" : "none" };
+const Blog = ({ match, blogs, user }) => {
   const dispatch = useDispatch();
+
+  const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null;
+  console.log(user);
+  console.log(blog);
 
   const handleLike = async () => {
     try {
@@ -30,18 +31,21 @@ const Blog = ({ blog, user }) => {
 
   const handleDelete = async () => {
     const id = blog.id;
-    dispatch(deleteBlog(id));
+
     const result = window.confirm(
       `Remove blog  ${blog.title} by ${blog.author}`
     );
     if (result === true) {
       try {
+        dispatch(deleteBlog(id));
         dispatch(
           setNotification(`${blog.title} by ${blog.author} deleted`, 5000)
         );
       } catch (exception) {
         dispatch(setNotification(exception.message, 5000));
       }
+    } else {
+      dispatch(setNotification("Nothing was deleted", 5000));
     }
   };
   const blogStyle = {
@@ -51,47 +55,41 @@ const Blog = ({ blog, user }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
-
-  const hideVisible = () => {
-    return (
-      <div style={hideWhenVisible} className="defaultBlog">
-        <p>{blog.title} </p>
-        {blog.author}{" "}
-        <button onClick={() => setLoginVisible(true)}>show</button>
-      </div>
-    );
-  };
-  const showVisible = () => {
-    return (
-      <div style={showWhenVisible}>
-        <span>{blog.title}</span> {blog.author}
-        <button onClick={() => setLoginVisible(false)}>hide</button>
-        <p>{blog.url}</p>
-        {blog.likes} likes
-        <button id="likeButton" onClick={handleLike}>
-          like blog
-        </button>
-        <p>{blog.user.name}</p>
-        {user.name === blog.user.name ? (
-          <button
-            style={{
-              backgroundColor: "azure",
-            }}
-            onClick={handleDelete}
-          >
-            remove
-          </button>
-        ) : (
-          ""
-        )}
-      </div>
-    );
-  };
-
+  if (!blog) {
+    return null;
+  }
   return (
-    <div className="blog" style={blogStyle}>
-      {hideVisible()}
-      {showVisible()}
+    <div style={blogStyle}>
+      <h2>
+        {" "}
+        <span>{blog.title}</span> {blog.author}
+      </h2>
+      <a href={blog.url} target="blank">
+        {blog.url}
+      </a>
+      <p>{blog.likes} likes</p>
+      <button
+        id="likeButton"
+        style={{
+          backgroundColor: "skyblue",
+        }}
+        onClick={handleLike}
+      >
+        like
+      </button>
+      <p>Added by {blog.user.name}</p>
+      {user.name === blog.user.name ? (
+        <button
+          style={{
+            backgroundColor: "red",
+          }}
+          onClick={handleDelete}
+        >
+          remove
+        </button>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

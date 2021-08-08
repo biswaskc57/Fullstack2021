@@ -29,7 +29,6 @@ const User = ({ users }) => {
                     <Link to={`/users/${user.id}`}>{user.name}</Link>
                   </TableCell>
                   <TableCell>{user.blogs.length}</TableCell>
-                  <TableCell>{user.id}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

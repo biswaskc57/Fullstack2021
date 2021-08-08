@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import Home from "./components/Home";
 import Bloglist from "./components/Bloglist";
+import Blog from "./components/Blog";
 import User from "./components/User";
 import UserInfo from "./components/UserInfo";
 import Loginform from "./components/loginform";
@@ -52,7 +53,8 @@ const App = () => {
   }, [dispatch]);
   console.log(userList);
 
-  const match = useRouteMatch("/users/:id");
+  const matchUser = useRouteMatch("/users/:id");
+  const matchBlog = useRouteMatch("/blogs/:id");
   const history = useHistory();
 
   const handleLogin = async (event) => {
@@ -119,7 +121,7 @@ const App = () => {
     return (
       <div>
         <AppBar position="static">
-          <Toolbar>
+          <Toolbar style={{ padding: "10" }}>
             <Button color="inherit" component={Link} to="/">
               home
             </Button>
@@ -139,10 +141,14 @@ const App = () => {
         </div>
         <Switch>
           <Route path="/users/:id">
-            <UserInfo match={match} userList={userList} />
+            <UserInfo match={matchUser} userList={userList} />
+          </Route>
+          <Route path="/blogs/:id">
+            <Blog match={matchBlog} user={users} blogs={blogs} />
           </Route>
           <Route path="/blogs">
-            <h2>create new</h2>
+            <h1>Blogs:</h1>
+            <h2>Create new Blog</h2>
             {blogForm()}
             <Bloglist user={users} blogs={blogs} />
           </Route>

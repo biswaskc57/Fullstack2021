@@ -1,15 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { setNotification } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
-import { likeBlog, deleteBlog } from "../reducers/blogReducer";
+import { likeBlog, deleteBlog, createComments } from "../reducers/blogReducer";
 
 const Blog = ({ match, blogs, user }) => {
-  const dispatch = useDispatch();
+  const [comment, setComment] = useState(null);
 
+  const dispatch = useDispatch();
+  console.log(comment);
   const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null;
   console.log(user);
   console.log(blog);
+  console.log(user);
+
+  const commentsHandler = (event) => {
+    event.preventDefault();
+    setComment({ desc: event.target.value });
+  };
+
+  console.log(comment);
+
+  const commentButtonHandler = async () => {
+    if (comment === null || comment.desc === "") {
+      dispatch(setNotification("Empty comment.", 5000));
+    } else {
+      try {
+        const id = blog.id;
+        const blogObject = {
+          user: blog.user.id,
+          likes: blog.likes,
+          author: blog.author,
+          title: blog.title,
+          url: blog.url,
+          comments: blog.comments.concat(comment),
+        };
+        console.log();
+        dispatch(createComments(id, blogObject));
+        dispatch(
+          setNotification(
+            `New comment added for the blogpost  ${blogObject.title}`,
+            5000
+          )
+        );
+      } catch (error) {
+        console.log("error");
+      }
+    }
+  };
 
   const handleLike = async () => {
     try {
@@ -20,6 +58,7 @@ const Blog = ({ match, blogs, user }) => {
         author: blog.author,
         title: blog.title,
         url: blog.url,
+        comments: blog.comments,
       };
 
       dispatch(likeBlog(blogObject, id));
@@ -90,6 +129,17 @@ const Blog = ({ match, blogs, user }) => {
       ) : (
         ""
       )}
+      <div>
+        <p>
+          Comments:
+          <input id="comments" onChange={commentsHandler} />
+          <button onClick={commentButtonHandler}>Add comment</button>
+        </p>
+        <h1>Comments</h1>
+        {blog.comments.map((comment, id) => (
+          <li key={id}>{comment.desc}</li>
+        ))}
+      </div>
     </div>
   );
 };

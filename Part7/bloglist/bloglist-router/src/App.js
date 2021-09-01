@@ -122,15 +122,9 @@ const App = () => {
       <div>
         <AppBar position="static">
           <Toolbar style={{ padding: "10" }}>
-            <Button color="inherit" component={Link} to="/">
-              home
-            </Button>
-            <Button color="inherit" component={Link} to="/blogs">
-              Blogs
-            </Button>
-            <Button color="inherit" component={Link} to="/users">
-              users
-            </Button>
+            <Link to="/">home</Link>
+            <Link to="/blogs">Blogs</Link>
+            <Link to="/users">users</Link>
 
             <em>{users.name} logged in</em>
             <Button onClick={handleLogout}>logout</Button>

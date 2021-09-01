@@ -33,6 +33,8 @@ const LoginForm = ({
         <button id="login-button" type="submit">
           login
         </button>
+        <h1> username: Biswas KC</h1>
+        <h1> password: Terobau</h1>
       </form>
     </div>
   );

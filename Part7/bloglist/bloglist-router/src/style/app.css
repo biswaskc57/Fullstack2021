@@ -25,3 +25,31 @@ h1 {
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.AppBar {
+  background: rgb(139, 213, 247);
+}
+
+.AppBarLink {
+  padding: 10px;
+  margin-left: 40px;
+  color: rgb(19, 40, 30);
+  font-size: 22px;
+}
+
+.footer {
+  background: rgb(165, 93, 93);
+  padding: 1em;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 60px;
+  width: 100%;
+}
+.footerText {
+  margin-left: 30%;
+}
+.comment {
+  height: 50px;
+  width: 300px;
+}

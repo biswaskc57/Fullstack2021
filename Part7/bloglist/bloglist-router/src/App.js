@@ -26,17 +26,17 @@ import storage from "../src/utils/storage";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user);
-  console.log(users);
+
   const blogs = useSelector((state) => state.blogs);
 
   const userList = useSelector((state) => state.userList);
-  console.log(userList);
 
   useEffect(() => {
     dispatch(initialBlogs());
@@ -44,22 +44,20 @@ const App = () => {
 
   useEffect(() => {
     const loginUser = storage.getUser();
-    console.log(loginUser);
     dispatch(setUser(loginUser));
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(initialUsers());
   }, [dispatch]);
-  console.log(userList);
 
   const matchUser = useRouteMatch("/users/:id");
   const matchBlog = useRouteMatch("/blogs/:id");
+  console.log(matchBlog);
   const history = useHistory();
 
   const handleLogin = async (event) => {
-    const user = dispatch(loginUser(username, password));
-    console.log(user);
+    dispatch(loginUser(username, password));
     event.preventDefault();
     setUsername("");
     setPassword("");
@@ -98,6 +96,7 @@ const App = () => {
     try {
       if (blogObject.title && blogObject.author) {
         dispatch(createBlog(blogObject));
+        dispatch(initialUsers());
         dispatch(
           setNotification(
             `a new blog '${blogObject.title}' by ${blogObject.author} added!`,
@@ -120,14 +119,39 @@ const App = () => {
   } else if (users !== null) {
     return (
       <div>
-        <AppBar position="static">
-          <Toolbar style={{ padding: "10" }}>
-            <Link to="/">home</Link>
-            <Link to="/blogs">Blogs</Link>
-            <Link to="/users">users</Link>
-
-            <em>{users.name} logged in</em>
-            <Button onClick={handleLogout}>logout</Button>
+        <AppBar position="static" class="AppBar">
+          <Toolbar style={{ padding: "10", marginLeft: "20px" }}>
+            <Link class="AppBarLink" to="/">
+              Home
+            </Link>
+            <Link class="AppBarLink" to="/blogs">
+              Blogs
+            </Link>
+            <Link class="AppBarLink" to="/users">
+              Users
+            </Link>
+            <AccountCircleIcon
+              style={{
+                marginLeft: "190px",
+              }}
+            ></AccountCircleIcon>
+            <em
+              style={{
+                padding: "10",
+              }}
+            >
+              {users.name}
+            </em>
+            <Button
+              style={{
+                padding: "10",
+                marginLeft: "60px",
+                backgroundColor: "lavender",
+              }}
+              onClick={handleLogout}
+            >
+              logout
+            </Button>
           </Toolbar>
         </AppBar>
         <div>
@@ -154,6 +178,9 @@ const App = () => {
             <Home />
           </Route>
         </Switch>
+        <div className="footer">
+          <em className="footerText">Copyrights @Biswas KC 2021</em>
+        </div>
       </div>
     );
   }

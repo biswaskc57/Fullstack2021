@@ -60,6 +60,7 @@ blogsRouter.post("/", async (request, response, next) => {
 
       user.blogs = user.blogs.concat(savedBlog._id);
       await user.save();
+
       console.log(savedBlog);
 
       response.json(savedBlog.toJSON());

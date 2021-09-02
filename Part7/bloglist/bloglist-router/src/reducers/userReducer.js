@@ -8,7 +8,6 @@ const userReducer = (state = null, action) => {
   switch (action.type) {
     case "LOGIN":
       state = action.data;
-      console.log(state);
       return state;
     case "LOGOUT":
       state = action.data;
@@ -30,7 +29,6 @@ export const loginUser = (username, password) => {
       dispatch(setNotification("welcome to the blog app", 5000));
     } catch (error) {
       dispatch(setNotification("wrong username or password", 5000));
-      console.log(error);
     }
   };
 };

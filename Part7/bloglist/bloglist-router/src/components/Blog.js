@@ -1,25 +1,24 @@
 import React, { useState } from "react";
-
+import { Button } from "@material-ui/core";
 import { setNotification } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
-import { likeBlog, deleteBlog, createComments } from "../reducers/blogReducer";
-
-const Blog = ({ match, blogs, user }) => {
+import { likeBlog, createComments } from "../reducers/blogReducer";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import AddCommentIcon from "@material-ui/icons/AddComment";
+import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+const Blog = ({ match, blogs }) => {
   const [comment, setComment] = useState(null);
 
   const dispatch = useDispatch();
-  console.log(comment);
+
+  console.log(match);
   const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null;
-  console.log(user);
   console.log(blog);
-  console.log(user);
 
   const commentsHandler = (event) => {
     event.preventDefault();
     setComment({ desc: event.target.value });
   };
-
-  console.log(comment);
 
   const commentButtonHandler = async () => {
     if (comment === null || comment.desc === "") {
@@ -35,7 +34,7 @@ const Blog = ({ match, blogs, user }) => {
           url: blog.url,
           comments: blog.comments.concat(comment),
         };
-        console.log();
+
         dispatch(createComments(id, blogObject));
         dispatch(
           setNotification(
@@ -68,25 +67,6 @@ const Blog = ({ match, blogs, user }) => {
     }
   };
 
-  const handleDelete = async () => {
-    const id = blog.id;
-
-    const result = window.confirm(
-      `Remove blog  ${blog.title} by ${blog.author}`
-    );
-    if (result === true) {
-      try {
-        dispatch(deleteBlog(id));
-        dispatch(
-          setNotification(`${blog.title} by ${blog.author} deleted`, 5000)
-        );
-      } catch (exception) {
-        dispatch(setNotification(exception.message, 5000));
-      }
-    } else {
-      dispatch(setNotification("Nothing was deleted", 5000));
-    }
-  };
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -95,7 +75,7 @@ const Blog = ({ match, blogs, user }) => {
     marginBottom: 5,
   };
   if (!blog) {
-    return null;
+    return <div>What the hell</div>;
   }
   return (
     <div style={blogStyle}>
@@ -107,38 +87,35 @@ const Blog = ({ match, blogs, user }) => {
         {blog.url}
       </a>
       <p>{blog.likes} likes</p>
-      <button
+      <Button
         id="likeButton"
         style={{
-          backgroundColor: "skyblue",
+          backgroundColor: "lavender",
         }}
         onClick={handleLike}
       >
-        like
-      </button>
+        <ThumbUpIcon></ThumbUpIcon>
+      </Button>
       <p>Added by {blog.user.name}</p>
-      {user.name === blog.user.name ? (
-        <button
-          style={{
-            backgroundColor: "red",
-          }}
-          onClick={handleDelete}
-        >
-          remove
-        </button>
-      ) : (
-        ""
-      )}
+
       <div>
-        <p>
-          Comments:
-          <input id="comments" onChange={commentsHandler} />
-          <button onClick={commentButtonHandler}>Add comment</button>
-        </p>
+        <p>Comment:</p>
+        <input id="comments" onChange={commentsHandler} className="comment" />
+        <Button onClick={commentButtonHandler}>
+          <AddCommentIcon></AddCommentIcon>{" "}
+        </Button>
+
         <h1>Comments</h1>
-        {blog.comments.map((comment, id) => (
-          <li key={id}>{comment.desc}</li>
-        ))}
+        <Table>
+          <TableBody>
+            {blog.comments.map((comment, id) => (
+              <TableRow key={id}>
+                {" "}
+                <TableCell>{comment.desc}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

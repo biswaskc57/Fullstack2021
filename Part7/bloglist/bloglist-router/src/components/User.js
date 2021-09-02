@@ -11,8 +11,6 @@ import {
 } from "@material-ui/core";
 
 const User = ({ users }) => {
-  console.log(users);
-
   if (users === null) {
     return <div></div>;
   } else

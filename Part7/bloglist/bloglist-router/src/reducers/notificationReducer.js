@@ -4,8 +4,6 @@ const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case "NEW NOTIFICATION":
       state = action.notification;
-      console.log(state);
-
       return state;
 
     case "REMOVE NOTIFICATION":
@@ -17,8 +15,6 @@ const notificationReducer = (state = initialState, action) => {
 let timeoutId;
 export const setNotification = (notification, sec) => {
   clearTimeout(timeoutId);
-  console.log(notification);
-  console.log(sec);
 
   return async (dispatch) => {
     dispatch({

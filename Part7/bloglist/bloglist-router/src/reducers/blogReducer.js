@@ -8,40 +8,23 @@ const blogReducer = (state = [], action) => {
       state = action.data;
       return state;
     case "NEW BLOG":
-      return [...state, action.data];
+      return state.concat(action.data);
     case "LIKE":
-      const blogToLike = action.data;
-
       const blog = state.find((blog) => blog.id === action.id);
-      console.log(blog);
-
-      const likedBlog = { ...blog, likes: blogToLike.likes };
-
-      const blogs = state.map((blog) =>
-        blog.id === action.id ? likedBlog : blog
-      );
-      return blogs;
+      const likedBlog = { ...blog, likes: action.data.likes };
+      return state.map((blog) => (blog.id === action.id ? likedBlog : blog));
 
     case "DELETE":
       const deletedBlog = action.data;
-      console.log(deletedBlog);
-      const bloglist = state.filter((blog) => blog.id !== deletedBlog.id);
-      console.log(bloglist);
-      return bloglist;
+      return state.filter((blog) => blog.id !== deletedBlog.id);
+
     case "NEW COMMENT":
-      const blogToComment = action.data;
-
       const givenBlog = state.find((blog) => blog.id === action.id);
-      console.log(givenBlog);
+      const commentedBlog = { ...givenBlog, comments: action.data.comments };
 
-      const commentedBlog = { ...givenBlog, comments: blogToComment.comments };
-      console.log(commentedBlog);
-      const blogLists = state.map((blog) =>
+      return state.map((blog) =>
         blog.id === action.id ? commentedBlog : blog
       );
-
-      console.log(blogLists);
-      return blogLists;
 
     default:
       return state;
@@ -81,8 +64,7 @@ export const likeBlog = (likedBlog, id) => {
 export const createComments = (id, object) => {
   return async (dispatch) => {
     const newBlog = await blogServices.createComments(id, object);
-    console.log(id, object);
-    console.log(id, newBlog);
+
     dispatch({ type: "NEW COMMENT", data: newBlog, id: id });
   };
 };

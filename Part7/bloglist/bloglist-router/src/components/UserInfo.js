@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 import React from "react";
-
+import { Table, TableCell, TableRow } from "@material-ui/core";
 const UserInfo = ({ userList, match }) => {
   console.log(userList);
   console.log(match.params.id);
@@ -19,11 +19,14 @@ const UserInfo = ({ userList, match }) => {
         {user.name} {"'s blog"}:
       </h1>
       <h3>Added blogs:</h3>
-      <ul>
+      <Table>
         {user.blogs.map((user) => (
-          <li key={user.id}>{user.title}</li>
+          <TableRow key={user.id}>
+            {" "}
+            <TableCell>{user.title}</TableCell>
+          </TableRow>
         ))}
-      </ul>
+      </Table>
     </div>
   );
 };

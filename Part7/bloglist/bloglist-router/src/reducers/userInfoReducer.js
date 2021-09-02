@@ -5,7 +5,6 @@ const userInfoReducer = (state = [], action) => {
   switch (action.type) {
     case "INITIAL USERS":
       state = action.data;
-      console.log(state);
       return state;
     default:
       return state;

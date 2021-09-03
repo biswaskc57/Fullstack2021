@@ -38,7 +38,7 @@ const Bloglist = ({ blogs, user }) => {
   return (
     <div>
       <TableContainer component={Paper}>
-        <Table>
+        <Table style={{ width: "80%", marginLeft: "60px" }}>
           <TableBody>
             {blogs
               .sort(function (a, b) {

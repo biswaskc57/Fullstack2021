@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "../style/Blogform.css";
+
 export default function BlogForm({ createBlog }) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -33,15 +35,17 @@ export default function BlogForm({ createBlog }) {
     <div className="formDiv">
       <form onSubmit={addBlog}>
         <p>
-          title:
+          <h3>Title:</h3>
           <input id="title" onChange={titleHandler} />
         </p>
         <p>
-          Author:
+          <h3>Author:</h3>
+
           <input id="author" onChange={authorHandler} />
         </p>
         <p>
-          Url:
+          <h3>Url:</h3>
+
           <input id="url" onChange={urlHandler} />
         </p>
         <p>

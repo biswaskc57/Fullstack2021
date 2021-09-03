@@ -118,7 +118,7 @@ const App = () => {
     );
   } else if (users !== null) {
     return (
-      <div>
+      <div className="App">
         <AppBar position="static" class="AppBar">
           <Toolbar style={{ padding: "10", marginLeft: "20px" }}>
             <Link class="AppBarLink" to="/">
@@ -165,9 +165,9 @@ const App = () => {
             <Blog match={matchBlog} user={users} blogs={blogs} />
           </Route>
           <Route path="/blogs">
-            <h1>Blogs:</h1>
-            <h2>Create new Blog</h2>
+            <h2>Create new Blog:</h2>
             {blogForm()}
+            <h1>Blogs:</h1>
             <Bloglist user={users} blogs={blogs} />
           </Route>
           <Route path="/users">

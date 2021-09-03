@@ -19,7 +19,7 @@ const UserInfo = ({ userList, match }) => {
         {user.name} {"'s blog"}:
       </h1>
       <h3>Added blogs:</h3>
-      <Table>
+      <Table style={{ width: "40%" }}>
         {user.blogs.map((user) => (
           <TableRow key={user.id}>
             {" "}

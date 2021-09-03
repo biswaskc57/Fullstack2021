@@ -1,33 +1,39 @@
 h1 {
   color: green;
   font-style: italic;
+  text-decoration: underline;
+  margin-left: 300px;
 }
+h2 {
+  text-decoration: underline;
+}
+
 .persons {
   color: grey;
   padding-top: 5px;
   font-size: 15px;
 }
 .error {
-  color: red;
-  background: lightgrey;
+  color: rgb(247, 126, 126);
+  background: (247, 126, 126);
   font-size: 20px;
   border-style: solid;
-  border-radius: 5px;
+  border-radius: 1px;
   padding: 10px;
   margin-bottom: 10px;
 }
 .addMessage {
+  background: #a4d2d8;
   color: green;
-  background: lightgrey;
+  border-style: outset;
   font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
 }
 
 .AppBar {
-  background: rgb(139, 213, 247);
+  background: rgb(105, 173, 105);
+  width: 100%;
 }
 
 .AppBarLink {
@@ -37,14 +43,38 @@ h1 {
   font-size: 22px;
 }
 
+h3 {
+  margin-bottom: 10px;
+  color: green;
+  text-decoration: underline;
+}
+strong {
+  text-decoration: underline;
+}
+
+form {
+  margin-top: 20px;
+}
+
+input {
+  height: 23px;
+  width: 250px;
+  border-radius: 10px;
+}
+button {
+  margin-left: 60px;
+  margin-top: 20px;
+  color: green;
+  margin-bottom: 10px;
+}
+
 .footer {
-  background: rgb(165, 93, 93);
-  padding: 1em;
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  clear: both;
+  position: relative;
+  background-color: burlywood;
+  margin-top: 300px;
   height: 60px;
-  width: 100%;
+  margin-bottom: -5px;
 }
 .footerText {
   margin-left: 30%;
@@ -52,4 +82,10 @@ h1 {
 .comment {
   height: 50px;
   width: 300px;
+}
+.togglableChildren {
+  margin-left: 30px;
+  border: solid;
+  width: 60%;
+  background-color: rgb(246, 246, 250);
 }

@@ -1,6 +1,6 @@
 .login {
   margin-left: 200px;
-  background-color: lightcyan;
+  background-color: rgb(246, 246, 250);
   width: 80%;
   height: 400px;
 }
@@ -17,11 +17,13 @@ form {
 }
 
 input {
-  height: 20px;
-  width: 200px;
+  height: 23px;
+  width: 250px;
+  border-radius: 10px;
 }
 button {
   margin-left: 60px;
   margin-top: 20px;
   color: green;
+  margin-bottom: 10px;
 }

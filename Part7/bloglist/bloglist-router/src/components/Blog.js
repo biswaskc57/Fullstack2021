@@ -6,6 +6,8 @@ import { likeBlog, createComments } from "../reducers/blogReducer";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import AddCommentIcon from "@material-ui/icons/AddComment";
 import { Table, TableBody, TableCell, TableRow } from "@material-ui/core";
+import "../style/Blog.css";
+
 const Blog = ({ match, blogs }) => {
   const [comment, setComment] = useState(null);
 
@@ -79,25 +81,26 @@ const Blog = ({ match, blogs }) => {
   }
   return (
     <div style={blogStyle}>
-      <h2>
-        {" "}
-        <span>{blog.title}</span> {blog.author}
-      </h2>
-      <a href={blog.url} target="blank">
-        {blog.url}
-      </a>
-      <p>{blog.likes} likes</p>
-      <Button
-        id="likeButton"
-        style={{
-          backgroundColor: "lavender",
-        }}
-        onClick={handleLike}
-      >
-        <ThumbUpIcon></ThumbUpIcon>
-      </Button>
-      <p>Added by {blog.user.name}</p>
-
+      <div className="Blog">
+        <h2>
+          {" "}
+          <span>{blog.title}</span> {blog.author}
+        </h2>
+        <a href={blog.url} target="blank">
+          {blog.url}
+        </a>
+        <p>{blog.likes} likes</p>
+        <Button
+          id="likeButton"
+          style={{
+            backgroundColor: "lavender",
+          }}
+          onClick={handleLike}
+        >
+          <ThumbUpIcon></ThumbUpIcon>
+        </Button>
+        <p>Added by {blog.user.name}</p>
+      </div>
       <div>
         <p>Comment:</p>
         <input id="comments" onChange={commentsHandler} className="comment" />

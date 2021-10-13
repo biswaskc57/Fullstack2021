@@ -1,6 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server')
-
-let authors = [
+const { v4: uuidv4 } = require('uuid');
+const authors = [
   {
     name: 'Robert Martin',
     id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
@@ -36,7 +36,7 @@ let authors = [
  * However, for simplicity, we will store the author's name in connection with the book
 */
 
-let books = [
+const books = [
   {
     title: 'Clean Code',
     published: 2008,
@@ -109,8 +109,17 @@ type Book {
     allAuthors:[Author!]!
     findAuthor(name: String!):Author
     bookCount:Int!
-    allBooks(author:String!):[Book!]!
+    allBooks(genre:String!, author:String!):[Book!]!
     findBook(title:String!): Book
+  }
+
+  type Mutation {
+    addBook(
+    title: String!
+    published: Int!
+    author: String!
+    genres: [String]!
+    ): Book
   }
 `
 
@@ -120,7 +129,7 @@ const resolvers = {
     allAuthors: () => authors,
     findAuthor: (root, args) =>
     authors.find(a=> a.name ===args.name),
-    allBooks: (root, args) => books.filter(book =>book.author===args.author),
+    allBooks: (root, args) => books.filter(book =>book.genres.includes(args.genre)&&book.author===args.author),
     findBook: (root, args) =>
     books.find(a=> a.title ===args.title)
 
@@ -132,6 +141,15 @@ const resolvers = {
       return booksByAuthor.length;
     }
 
+  },
+
+  Mutation: {
+    addBook: (root, args) => {
+      const book = { ...args, id:uuidv4() }
+      books = books.concat(book)
+      console.log(books)
+      return book
+    }
   }
 }
 
@@ -139,7 +157,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 })
-
+console.log(books);
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })

@@ -109,7 +109,7 @@ type Book {
     allAuthors:[Author!]!
     findAuthor(name: String!):Author
     bookCount:Int!
-    allBooks:[Book!]!
+    allBooks(author:String!):[Book!]!
     findBook(title:String!): Book
   }
 `
@@ -120,7 +120,7 @@ const resolvers = {
     allAuthors: () => authors,
     findAuthor: (root, args) =>
     authors.find(a=> a.name ===args.name),
-    allBooks: () => books,
+    allBooks: (root, args) => books.filter(book =>book.author===args.author),
     findBook: (root, args) =>
     books.find(a=> a.title ===args.title)
 

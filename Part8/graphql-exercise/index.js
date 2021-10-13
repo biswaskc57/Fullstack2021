@@ -93,6 +93,7 @@ type Author {
     name: String!
     id: ID!
     born: Int
+    bookCount: Int
 }
 
 type Book {
@@ -119,10 +120,17 @@ const resolvers = {
     allAuthors: () => authors,
     findAuthor: (root, args) =>
     authors.find(a=> a.name ===args.name),
-    bookCount: () => books.length,
     allBooks: () => books,
     findBook: (root, args) =>
     books.find(a=> a.title ===args.title)
+
+  },
+  Author:{
+    bookCount: (root)=> {
+      const booksByAuthor = books.filter(book =>book.author ===root.name)
+
+      return booksByAuthor.length;
+    }
 
   }
 }

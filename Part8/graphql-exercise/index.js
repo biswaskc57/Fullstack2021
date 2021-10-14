@@ -1,6 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server')
 const { v4: uuidv4 } = require('uuid');
-const authors = [
+let authors = [
   {
     name: 'Robert Martin',
     id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
@@ -36,7 +36,7 @@ const authors = [
  * However, for simplicity, we will store the author's name in connection with the book
 */
 
-const books = [
+let books = [
   {
     title: 'Clean Code',
     published: 2008,
@@ -145,10 +145,24 @@ const resolvers = {
 
   Mutation: {
     addBook: (root, args) => {
-      const book = { ...args, id:uuidv4() }
-      books = books.concat(book)
-      console.log(books)
-      return book
+      if (!books.find(book => book.name === args.name)) {
+       let author = {
+        "name": args.name,
+        "born": null,
+        "bookCount": 1
+       }
+      authors = authors.concat(author);
+      let bookToAdd = { ...args, id:uuidv4() }
+       books.concat(bookToAdd)
+        console.log(books)
+        return book
+        }
+      else{
+      let book = { ...args, id:uuidv4() }
+       books = books.concat(book)
+        console.log(books)
+        return book
+      }
     }
   }
 }

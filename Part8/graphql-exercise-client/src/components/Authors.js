@@ -1,11 +1,11 @@
   
 import React from 'react'
 
-const Authors = ({authors}) => {
+const Authors = ({authors, show}) => {
 
-  console.log("author is", authors)
-  if (!authors) {
-    return <div></div>
+ 
+  if (!show) {
+    return null
   }
   
   

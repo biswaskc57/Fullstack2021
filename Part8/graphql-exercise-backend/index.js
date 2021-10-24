@@ -1,5 +1,26 @@
-const { ApolloServer, gql } = require('apollo-server')
+require("dotenv").config();
+const { ApolloServer, gql,  UserInputError, AuthenticationError } = require('apollo-server')
+const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid');
+
+const Author = require('./models/Author')
+const Book = require('./models/Book')
+const User = require('./models/User')
+ 
+const MONGODB_URI = process.env.MONGODB_URI
+const JWT_SECRET = process.env.SECRET_KEY
+console.log('connecting to', MONGODB_URI)
+
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('error connecting to MongoDB:', error.message)
+  })
+
+
 let authors = [
   {
     name: 'Robert Martin',
@@ -26,15 +47,7 @@ let authors = [
   },
 ]
 
-/*
- * Suomi:
- * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
- * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
- *
- * English:
- * It might make more sense to associate a book with its author by storing the author's name in the context of the book instead of the author's id
- * However, for simplicity, we will store the author's name in connection with the book
-*/
+
 
 let books = [
   {
@@ -99,12 +112,20 @@ type Author {
 type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author
     id: ID!
     genres: [String]!
 }
+type User {
+  username: String!
+  favouriteGenre: String!
+  id: ID!
+}
+type Token {
+  value: String!
+}
 
-  type Query {
+type Query {
     authorCount:Int!
     allAuthors:[Author!]!
     findAuthor(name: String!):Author
@@ -112,6 +133,7 @@ type Book {
     allBooks:[Book!]!
     allBooksByCategory(genre:String!, author:String!):[Book!]!
     findBook(title:String!): Book
+    me: User
   }
 
   type Mutation {
@@ -124,31 +146,101 @@ type Book {
     editAuthor(
       name: String!
       setBornTo: Int!
-    ): Author   
+    ): Author 
+    createUser(
+      username: String!
+      favouriteGenre: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token  
   }
 `
 
 const resolvers = {
   Query: {
-    authorCount: () => authors.length,
-    allAuthors: () => authors,
-    findAuthor: (root, args) =>
-    authors.find(a=> a.name ===args.name),
-    allBooksByCategory: (root, args) => books.filter(book =>book.genres.includes(args.genre)&&book.author===args.author),
-    allBooks:()=>books,
-    findBook: (root, args) =>
-    books.find(a=> a.title ===args.title)
-
-  },
-  Author:{
-    bookCount: (root)=> {
-      const booksByAuthor = books.filter(book =>book.author ===root.name)
-
-      return booksByAuthor.length;
+    authorCount: async () => {
+    try {
+      return Author.collection.countDocuments()
+       
+     } catch (error) {
+       throw new UserInputError(error.message, {
+         invalidArgs: args,
+       })
+     }
+    },
+    allAuthors: async (root, args) => {
+      try {
+       return await Author.find({})
+        
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+    
+    },
+    findAuthor: async(root, args) =>{ 
+      try {
+      return await Author.findOne({ name: args.name })
+       
+     } catch (error) {
+       throw new UserInputError(error.message, {
+         invalidArgs: args,
+       })
+     }
+    }
+   ,
+    allBooksByCategory: async (root, args) => 
+    {
+      try {
+      return await Book.find({ genres: args.genre, "author.name": args.author}  )
+       
+     } catch (error) {
+       throw new UserInputError(error.message, {
+         invalidArgs: args,
+       })
+     }
+    },
+    allBooks:()=> async (root, args) => {
+      try {
+       return await Book.find({})
+        
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+    
+    },
+    findBook:async (root, args) =>
+    { 
+      try {
+      return await Book.findOne({ title: args.title })
+       
+     } catch (error) {
+       throw new UserInputError(error.message, {
+         invalidArgs: args,
+       })
+     }
     }
 
-  },
-
+  }
+  ,
+    Author:{
+      bookCount:async (root) =>{
+      try {
+        const booksByAuthor= await Book.find({ "author.name": root.author})
+        return booksByAuthor.length  
+         } catch (error) {
+           throw new UserInputError(error.message, {
+             invalidArgs: args,
+           })
+         }
+      }
+    }
+,
   Mutation: {
     addBook: (root, args) => {
       if (!books.find(book => book.author===(args.author))) {
@@ -171,15 +263,20 @@ const resolvers = {
         return book
       }
     },
-    editAuthor: (root, args) => {
-      const author = authors.find(author => author.name === args.name)
-      if (!author) {
-        return null
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({name: args.name})
+      
+      author.born =args.setBornTo
+
+      try {
+       await author.save()
+       return author
       }
-  
-      const updatedAuthor = { ...author, born: args.setBornTo}
-      authors = authors.map(author => author.name === args.name ? updatedAuthor : author)
-      return updatedAuthor
+      catch(error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
     }       
     
   },
@@ -187,8 +284,18 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(
+        auth.substring(7), JWT_SECRET
+      )
+      const currentUser = await User
+        .findById(decodedToken.id).populate('friends')
+      return { currentUser }
+    }
+  }
 })
-console.log(books);
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })

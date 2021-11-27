@@ -126,6 +126,7 @@ const resolvers = {
     },
     allBooks: async (root, args) => {
       try {
+
        return await Book.find({}).populate("author")     
       } catch (error) {
         throw new UserInputError(error.message, {
@@ -156,7 +157,8 @@ const resolvers = {
       bookCount:async (root) =>{
       try {
         const author = await Author.find({name: root.name})
-        return await Book.find({author}).populate("author") 
+         await Book.find({author}).populate("author")  
+        return author[0].bookCount
          } catch (error) {
            throw new UserInputError(error.message, {
              invalidArgs: root,
@@ -168,7 +170,7 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, context) => {
       const currentUser = context.currentUser
-  
+  console.log("current user is",currentUser  )
       if (!currentUser) {
         throw new AuthenticationError("not authenticated")
       }
@@ -196,6 +198,7 @@ const resolvers = {
         }
         await author.save()
  
+        console.log(bookToAdd)
       return bookToAdd
     }
 
@@ -217,21 +220,23 @@ const resolvers = {
        }
        await Author.findByIdAndUpdate(author.id, authorToAddBookCount, { new: true })
  
+       console.log(bookToAdd)
         return bookToAdd
       }
     }
     catch (error) {
       throw new UserInputError(error.message, {
         invalidArgs: args,
-      })
-    }
+        })
+      }
     },
+
     editAuthor: async (root, args) => {
       const author = await Author.findOne({name: args.name})
       
       author.born =args.setBornTo
-
       try {
+        console.log("Hello, we are here in edit author section")
        await author.save()
        return author
       }

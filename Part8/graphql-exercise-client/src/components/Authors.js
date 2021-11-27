@@ -11,6 +11,8 @@ const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
 })
 
 
+
+
   if (!show) {
     return null
   }
@@ -43,7 +45,6 @@ const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
-              <td>{a.bookCount}</td>
             </tr>
           )}
         </tbody>
@@ -80,7 +81,7 @@ const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
             onChange={({ target }) => setYear(Number(target.value))}
           />
 
-          <button  type='submit'>add genre</button>
+          <button  type='submit'>edit born</button>
           </form>
         </div>
         
